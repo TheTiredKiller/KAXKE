@@ -1,0 +1,86 @@
+body {
+    background-color: lightblue;
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    color: red;
+    text-align: center;
+    border: 3px solid black;
+    border-radius: 150px;
+    padding: 5px;
+}
+
+h4 {
+    color: red;
+    text-align: center;
+    border: 3px solid black;
+    border-radius: 150px;
+    padding-left: 10px;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+    border: 2px solid black;
+    border-radius: 100px;
+    padding: 5px 10px;
+    display: inline-block;
+    margin: 5px 0;
+}
+
+a:hover {
+    background-color: white;
+}
+
+.main-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.links {
+    flex: 1;
+}
+
+.announcements {
+    flex: 1;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 15px;
+    margin-left: 20px;
+}
+
+.announcements input[type="text"],
+.announcements textarea {
+    width: 90%;
+    padding: 8px;
+    border: 2px solid black;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.announcements textarea {
+    height: 80px;
+    resize: none;
+}
+
+.announcements input[type="submit"] {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: cyan;
+    cursor: pointer;
+}
+
+.announcements input[type="submit"]:hover {
+    background-color: lightgreen;
+}
+
+.announcement-item {
+    border-top: 1px solid gray;
+    padding-top: 10px;
+    margin-top: 10px;
+}

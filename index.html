@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KAXKE Webpage</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+
+    <h1>Welcome to the KAXKE Webpage</h1>
+    <h4>The following links below are the suggestions, info, members, and etc.</h4>
+
+    <div class="main-container">
+        <!-- Left column: links -->
+        <div class="links">
+            <a href="suggestions.html">Suggestions</a><br>
+            <a href="https://www.youtube.com/@YourLovelyKeplit">Youtube</a><br>
+            <a href="members.html">Members</a><br>
+            <a href="https://genius.com/KAXKE">Genius</a>
+        </div>
+
+        <!-- Right column: announcements -->
+        <div class="announcements">
+            <h2>Announcements</h2>
+            
+            <form id="announcementForm" action="https://formspree.io/f/xlgwnppn" method="POST">
+                <label for="email">Email:</label><br>
+                <input type="text" id="email" name="email" placeholder="Your email" required><br><br>
+
+                <label for="announcement">Announcement:</label><br>
+                <textarea id="announcement" name="announcement" placeholder="Type announcement" required></textarea><br><br>
+
+                <input type="submit" value="Post">
+            </form>
+
+            <div class="announcement-item">
+                <p><strong>Admin:</strong> Welcome to the KAXKE announcements!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('announcementForm');
+        const emailInput = document.getElementById('email');
+
+        form.addEventListener('submit', function(e) {
+            const allowedEmail = 'dvnpaul28@gmail.com';
+            if(emailInput.value.trim() !== allowedEmail) {
+                e.preventDefault();
+                alert('You do not have access to post announcements.');
+            }
+        });
+    </script>
+
+</body>
+</html>
