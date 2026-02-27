@@ -1,2 +1,2 @@
 # KAXKE
-The Official Kaxke Webpage
+Official KAXKE webpage files.

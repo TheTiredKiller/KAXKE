@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcement Admin Access</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Announcement Admin Access</h1>
+
+    <form id="announcementForm" class="card form-card">
+        <label for="email">Admin Email</label>
+        <input type="text" id="email" name="email" placeholder="name@example.com" required>
+
+        <label for="announcement">Announcement</label>
+        <textarea id="announcement" name="announcement" placeholder="Write an update..." required></textarea>
+
+        <input type="submit" value="Post Announcement">
+    </form>
+
+    <p class="access-note">Allowed emails: julianatservice@gmail.com, dvnpaul28@gmail.com</p>
+    <a href="index.html">Back to Home</a>
+
+    <script>
+        const announcementForm = document.getElementById('announcementForm');
+        const emailInput = document.getElementById('email');
+        const messageInput = document.getElementById('announcement');
+
+        const allowedEmails = [
+            'julianatservice@gmail.com',
+            'dvnpaul28@gmail.com'
+        ];
+
+        announcementForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const submittedEmail = emailInput.value.trim().toLowerCase();
+            const message = messageInput.value.trim();
+
+            if (!allowedEmails.includes(submittedEmail)) {
+                alert('This email does not have announcement access.');
+                return;
+            }
+
+            const savedAnnouncements = JSON.parse(localStorage.getItem('kaxkeAnnouncements') || '[]');
+            savedAnnouncements.push({
+                email: submittedEmail,
+                message: message
+            });
+            localStorage.setItem('kaxkeAnnouncements', JSON.stringify(savedAnnouncements));
+
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

@@ -1,55 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KAXKE Webpage</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <h1>Welcome to the KAXKE Webpage</h1>
-    <h4>The following links below are the suggestions, info, members, and etc.</h4>
+    <h1>Welcome to KAXKE</h1>
+    <h4>Quick links to suggestions, members, and official pages.</h4>
 
     <div class="main-container">
-        <!-- Left column: links -->
         <div class="links">
-            <a href="suggestions.html">Suggestions</a><br>
-            <a href="https://www.youtube.com/@YourLovelyKeplit">Youtube</a><br>
-            <a href="members.html">Members</a><br>
+            <a href="suggestions.html">Suggestions</a>
+            <a href="members.html">Members</a>
+            <a href="recieve.html">Announcement Admin Access</a>
+            <a href="https://www.youtube.com/@YourLovelyKeplit">YouTube</a>
             <a href="https://genius.com/KAXKE">Genius</a>
         </div>
 
-        <!-- Right column: announcements -->
-        <div class="announcements">
+        <section class="announcements">
             <h2>Announcements</h2>
-            
-            <form id="announcementForm" action="https://formspree.io/f/xlgwnppn" method="POST">
-                <label for="email">Email:</label><br>
-                <input type="text" id="email" name="email" placeholder="Your email" required><br><br>
-
-                <label for="announcement">Announcement:</label><br>
-                <textarea id="announcement" name="announcement" placeholder="Type announcement" required></textarea><br><br>
-
-                <input type="submit" value="Post">
-            </form>
-
-            <div class="announcement-item">
-                <p><strong>Admin:</strong> Welcome to the KAXKE announcements!</p>
-            </div>
-        </div>
+            <p class="access-note">This page receives and shows announcements. Posting is limited to approved admin emails on the Admin Access page.</p>
+            <div id="announcementList"></div>
+        </section>
     </div>
 
     <script>
-        const form = document.getElementById('announcementForm');
-        const emailInput = document.getElementById('email');
+        const announcementList = document.getElementById('announcementList');
+        const savedAnnouncements = JSON.parse(localStorage.getItem('kaxkeAnnouncements') || '[]');
 
-        form.addEventListener('submit', function(e) {
-            const allowedEmail = 'dvnpaul28@gmail.com';
-            if(emailInput.value.trim() !== allowedEmail) {
-                e.preventDefault();
-                alert('You do not have access to post announcements.');
-            }
-        });
+        if (savedAnnouncements.length === 0) {
+            announcementList.innerHTML = '<p class="announcement-item"><strong>Admin:</strong> Welcome to the KAXKE page.</p>';
+        } else {
+            announcementList.innerHTML = savedAnnouncements
+                .slice()
+                .reverse()
+                .map(function (item) {
+                    return '<p class="announcement-item"><strong>' + item.email + ':</strong> ' + item.message + '</p>';
+                })
+                .join('');
+        }
     </script>
-
 </body>
 </html>

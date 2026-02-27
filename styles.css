@@ -2,22 +2,19 @@ body {
     background-color: lightblue;
     font-family: Arial, sans-serif;
     margin: 20px;
-}
-
-h1 {
-    color: red;
     text-align: center;
-    border: 3px solid black;
-    border-radius: 150px;
-    padding: 5px;
 }
 
+h1,
 h4 {
     color: red;
-    text-align: center;
     border: 3px solid black;
     border-radius: 150px;
-    padding-left: 10px;
+    padding: 8px;
+}
+
+h2 {
+    margin: 0 0 10px;
 }
 
 a {
@@ -25,62 +22,83 @@ a {
     text-decoration: none;
     border: 2px solid black;
     border-radius: 100px;
-    padding: 5px 10px;
+    padding: 8px 12px;
     display: inline-block;
-    margin: 5px 0;
+    margin: 6px 0;
+    background-color: white;
 }
 
 a:hover {
-    background-color: white;
+    background-color: #f0f0f0;
 }
 
 .main-container {
     display: flex;
-    justify-content: space-between;
+    gap: 20px;
+    justify-content: center;
+    align-items: flex-start;
     margin-top: 30px;
 }
 
-.links {
-    flex: 1;
-}
-
+.links,
 .announcements {
     flex: 1;
-    background-color: white;
-    border: 2px solid black;
-    border-radius: 15px;
-    padding: 15px;
-    margin-left: 20px;
+    max-width: 420px;
 }
 
-.announcements input[type="text"],
-.announcements textarea {
+.card,
+.announcements,
+.form-card {
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px auto;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+textarea {
     width: 90%;
+    max-width: 320px;
     padding: 8px;
     border: 2px solid black;
     border-radius: 8px;
-    margin-bottom: 10px;
+    margin-top: 6px;
 }
 
-.announcements textarea {
-    height: 80px;
-    resize: none;
+textarea {
+    min-height: 100px;
+    resize: vertical;
 }
 
-.announcements input[type="submit"] {
+input[type="submit"] {
+    margin-top: 15px;
     padding: 8px 20px;
     border: none;
     border-radius: 8px;
     background-color: cyan;
     cursor: pointer;
+    font-weight: bold;
 }
 
-.announcements input[type="submit"]:hover {
+input[type="submit"]:hover {
     background-color: lightgreen;
 }
 
 .announcement-item {
-    border-top: 1px solid gray;
-    padding-top: 10px;
-    margin-top: 10px;
+    margin: 0;
+    margin-top: 12px;
+    border-top: 1px solid #bbb;
+    padding-top: 12px;
+}
+
+.access-note {
+    margin-top: 12px;
+    font-size: 0.95rem;
 }
