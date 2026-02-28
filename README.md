@@ -9,9 +9,13 @@ Redesigned multi-page static website for KAXKE with:
 
 ## Pages
 - `index.html` — public homepage + announcements display
-- `recieve.html` — admin posting form for announcements
+- `admin-login.html` — admin email + password login
+- `recieve.html` — authenticated admin posting form for announcements
 - `members.html` — member profiles
 - `suggestions.html` — suggestion form
 
 ## Notes
 Announcements are stored in browser `localStorage` under `kaxkeAnnouncements`.
+
+
+Admin access requires an approved email and the password `DaysXNight20132012`.

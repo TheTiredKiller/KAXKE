@@ -14,7 +14,7 @@
                 <a href="index.html">Home</a>
                 <a href="members.html">Members</a>
                 <a href="suggestions.html">Suggestions</a>
-                <a href="recieve.html">Admin Access</a>
+                <a href="admin-login.html">Admin Login</a>
             </nav>
         </div>
     </header>
@@ -22,13 +22,12 @@
     <main class="container">
         <section class="hero">
             <h2>Announcement Admin Access</h2>
-            <p>Only approved admins can post to the homepage feed.</p>
+            <p>Post announcements to the homepage feed.</p>
         </section>
 
         <section class="grid">
             <form id="announcementForm" class="card form-card">
-                <label for="email">Admin Email</label>
-                <input type="text" id="email" name="email" placeholder="name@example.com" required>
+                <p class="muted" id="loggedInAs"></p>
 
                 <label for="announcement">Announcement</label>
                 <textarea id="announcement" name="announcement" placeholder="Write an update..." required></textarea>
@@ -42,7 +41,7 @@
                     <li>JPhanton</li>
                     <li>NXLKeplit</li>
                 </ul>
-                <p class="muted">After posting, the new announcement appears on the homepage feed.</p>
+                <p class="muted">Need to switch account? <a href="admin-login.html">Go back to login</a>.</p>
             </article>
         </section>
     </main>
@@ -53,29 +52,35 @@
 
     <script>
         const announcementForm = document.getElementById('announcementForm');
-        const emailInput = document.getElementById('email');
         const messageInput = document.getElementById('announcement');
+        const loggedInAs = document.getElementById('loggedInAs');
 
         const adminAliases = {
             'julianatservice@gmail.com': 'JPhanton',
             'dvnpaul28@gmail.com': 'NXLKeplit'
         };
 
+        const isAuthenticated = sessionStorage.getItem('kaxkeAdminAuthenticated') === 'true';
+        const sessionAdminEmail = (sessionStorage.getItem('kaxkeAdminEmail') || '').toLowerCase();
+
+        if (!isAuthenticated || !Object.prototype.hasOwnProperty.call(adminAliases, sessionAdminEmail)) {
+            window.location.href = 'admin-login.html';
+        } else {
+            loggedInAs.textContent = 'Logged in as: ' + adminAliases[sessionAdminEmail];
+        }
+
         announcementForm.addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const submittedEmail = emailInput.value.trim().toLowerCase();
             const message = messageInput.value.trim();
-
-            if (!Object.prototype.hasOwnProperty.call(adminAliases, submittedEmail)) {
-                alert('This email does not have announcement access.');
+            if (!message) {
                 return;
             }
 
             const savedAnnouncements = JSON.parse(localStorage.getItem('kaxkeAnnouncements') || '[]');
             savedAnnouncements.push({
-                email: submittedEmail,
-                author: adminAliases[submittedEmail],
+                email: sessionAdminEmail,
+                author: adminAliases[sessionAdminEmail],
                 message: message
             });
             localStorage.setItem('kaxkeAnnouncements', JSON.stringify(savedAnnouncements));

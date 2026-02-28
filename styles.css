@@ -143,6 +143,7 @@ body {
 }
 
 .form-card input[type="text"],
+.form-card input[type="password"],
 .form-card textarea {
     width: 100%;
     margin-top: 6px;
