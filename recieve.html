@@ -19,7 +19,7 @@
         <input type="submit" value="Post Announcement">
     </form>
 
-    <p class="access-note">Allowed emails: julianatservice@gmail.com, dvnpaul28@gmail.com</p>
+    <p class="access-note">Allowed admins: JPhanton, NXLKeplit</p>
     <a href="index.html">Back to Home</a>
 
     <script>
@@ -27,10 +27,10 @@
         const emailInput = document.getElementById('email');
         const messageInput = document.getElementById('announcement');
 
-        const allowedEmails = [
-            'julianatservice@gmail.com',
-            'dvnpaul28@gmail.com'
-        ];
+        const adminAliases = {
+            'julianatservice@gmail.com': 'JPhanton',
+            'dvnpaul28@gmail.com': 'NXLKeplit'
+        };
 
         announcementForm.addEventListener('submit', function (event) {
             event.preventDefault();
@@ -38,7 +38,7 @@
             const submittedEmail = emailInput.value.trim().toLowerCase();
             const message = messageInput.value.trim();
 
-            if (!allowedEmails.includes(submittedEmail)) {
+            if (!Object.prototype.hasOwnProperty.call(adminAliases, submittedEmail)) {
                 alert('This email does not have announcement access.');
                 return;
             }
@@ -46,6 +46,7 @@
             const savedAnnouncements = JSON.parse(localStorage.getItem('kaxkeAnnouncements') || '[]');
             savedAnnouncements.push({
                 email: submittedEmail,
+                author: adminAliases[submittedEmail],
                 message: message
             });
             localStorage.setItem('kaxkeAnnouncements', JSON.stringify(savedAnnouncements));

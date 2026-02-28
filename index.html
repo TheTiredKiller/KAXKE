@@ -21,7 +21,7 @@
 
         <section class="announcements">
             <h2>Announcements</h2>
-            <p class="access-note">This page receives and shows announcements. Posting is limited to approved admin emails on the Admin Access page.</p>
+            <p class="access-note">This page receives and shows announcements. Posting is limited to approved admins on the Admin Access page.</p>
             <div id="announcementList"></div>
         </section>
     </div>
@@ -30,6 +30,11 @@
         const announcementList = document.getElementById('announcementList');
         const savedAnnouncements = JSON.parse(localStorage.getItem('kaxkeAnnouncements') || '[]');
 
+        const adminAliases = {
+            'julianatservice@gmail.com': 'JPhanton',
+            'dvnpaul28@gmail.com': 'NXLKeplit'
+        };
+
         if (savedAnnouncements.length === 0) {
             announcementList.innerHTML = '<p class="announcement-item"><strong>Admin:</strong> Welcome to the KAXKE page.</p>';
         } else {
@@ -37,7 +42,8 @@
                 .slice()
                 .reverse()
                 .map(function (item) {
-                    return '<p class="announcement-item"><strong>' + item.email + ':</strong> ' + item.message + '</p>';
+                    const displayName = item.author || adminAliases[item.email] || 'Admin';
+                    return '<p class="announcement-item"><strong>' + displayName + ':</strong> ' + item.message + '</p>';
                 })
                 .join('');
         }
