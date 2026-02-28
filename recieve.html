@@ -3,24 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Announcement Admin Access</title>
+    <title>KAXKE | Admin Access</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Announcement Admin Access</h1>
+    <header class="site-header">
+        <div class="container header-inner">
+            <h1 class="brand">KAXKE</h1>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="members.html">Members</a>
+                <a href="suggestions.html">Suggestions</a>
+                <a href="recieve.html">Admin Access</a>
+            </nav>
+        </div>
+    </header>
 
-    <form id="announcementForm" class="card form-card">
-        <label for="email">Admin Email</label>
-        <input type="text" id="email" name="email" placeholder="name@example.com" required>
+    <main class="container">
+        <section class="hero">
+            <h2>Announcement Admin Access</h2>
+            <p>Only approved admins can post to the homepage feed.</p>
+        </section>
 
-        <label for="announcement">Announcement</label>
-        <textarea id="announcement" name="announcement" placeholder="Write an update..." required></textarea>
+        <section class="grid">
+            <form id="announcementForm" class="card form-card">
+                <label for="email">Admin Email</label>
+                <input type="text" id="email" name="email" placeholder="name@example.com" required>
 
-        <input type="submit" value="Post Announcement">
-    </form>
+                <label for="announcement">Announcement</label>
+                <textarea id="announcement" name="announcement" placeholder="Write an update..." required></textarea>
 
-    <p class="access-note">Allowed admins: JPhanton, NXLKeplit</p>
-    <a href="index.html">Back to Home</a>
+                <input type="submit" value="Post Announcement">
+            </form>
+
+            <article class="card">
+                <h3>Allowed Admins</h3>
+                <ul class="list">
+                    <li>JPhanton</li>
+                    <li>NXLKeplit</li>
+                </ul>
+                <p class="muted">After posting, the new announcement appears on the homepage feed.</p>
+            </article>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">KAXKE official webpage.</div>
+    </footer>
 
     <script>
         const announcementForm = document.getElementById('announcementForm');

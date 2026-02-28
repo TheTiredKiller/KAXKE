@@ -3,28 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KAXKE Webpage</title>
+    <title>KAXKE | Home</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Welcome to KAXKE</h1>
-    <h4>Quick links to suggestions, members, and official pages.</h4>
-
-    <div class="main-container">
-        <div class="links">
-            <a href="suggestions.html">Suggestions</a>
-            <a href="members.html">Members</a>
-            <a href="recieve.html">Announcement Admin Access</a>
-            <a href="https://www.youtube.com/@YourLovelyKeplit">YouTube</a>
-            <a href="https://genius.com/KAXKE">Genius</a>
+    <header class="site-header">
+        <div class="container header-inner">
+            <h1 class="brand">KAXKE</h1>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="members.html">Members</a>
+                <a href="suggestions.html">Suggestions</a>
+                <a href="recieve.html">Admin Access</a>
+            </nav>
         </div>
+    </header>
 
-        <section class="announcements">
-            <h2>Announcements</h2>
-            <p class="access-note">This page receives and shows announcements. Posting is limited to approved admins on the Admin Access page.</p>
-            <div id="announcementList"></div>
+    <main class="container">
+        <section class="hero">
+            <h2>Official KAXKE Hub</h2>
+            <p>Stay updated with the latest group announcements, send feedback, and quickly jump to official KAXKE links.</p>
         </section>
-    </div>
+
+        <section class="grid">
+            <article class="card">
+                <h3>Quick Links</h3>
+                <div class="nav-links">
+                    <a href="https://www.youtube.com/@YourLovelyKeplit" target="_blank" rel="noopener noreferrer">YouTube</a>
+                    <a href="https://genius.com/KAXKE" target="_blank" rel="noopener noreferrer">Genius</a>
+                </div>
+            </article>
+
+            <article class="card">
+                <span class="tag">Live Feed</span>
+                <h3>Announcements</h3>
+                <p class="muted">Posting is restricted to approved admins on the Admin Access page.</p>
+                <div id="announcementList"></div>
+            </article>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">KAXKE official webpage.</div>
+    </footer>
 
     <script>
         const announcementList = document.getElementById('announcementList');
