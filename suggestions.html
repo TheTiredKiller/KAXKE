@@ -26,7 +26,7 @@
         </section>
 
         <section class="grid">
-            <form class="card form-card" action="https://formspree.io/f/xlgwnppn" method="POST">
+            <form id="suggestionForm" class="card form-card">
                 <label for="name">Name</label>
                 <input type="text" id="name" name="name" placeholder="Your name" required>
 
@@ -34,6 +34,7 @@
                 <textarea id="suggestion" name="suggestion" placeholder="Write your suggestion" required></textarea>
 
                 <input type="submit" value="Send Suggestion">
+                <p id="suggestionStatus" class="muted"></p>
             </form>
 
             <article class="card">
@@ -43,6 +44,7 @@
                     <li>Video/content ideas</li>
                     <li>Constructive feedback for improvements</li>
                 </ul>
+                <p class="muted">Sent suggestions are visible in Admin Access.</p>
             </article>
         </section>
     </main>
@@ -50,5 +52,33 @@
     <footer class="footer">
         <div class="container">DAYSXLOVE official webpage.</div>
     </footer>
+
+    <script>
+        const suggestionForm = document.getElementById('suggestionForm');
+        const suggestionStatus = document.getElementById('suggestionStatus');
+
+        suggestionForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const suggestion = document.getElementById('suggestion').value.trim();
+
+            if (!name || !suggestion) {
+                suggestionStatus.textContent = 'Please complete all fields.';
+                return;
+            }
+
+            const savedSuggestions = JSON.parse(localStorage.getItem('daysxloveSuggestions') || '[]');
+            savedSuggestions.push({
+                name: name,
+                message: suggestion,
+                createdAt: new Date().toISOString()
+            });
+            localStorage.setItem('daysxloveSuggestions', JSON.stringify(savedSuggestions));
+
+            suggestionForm.reset();
+            suggestionStatus.textContent = 'Suggestion sent successfully.';
+        });
+    </script>
 </body>
 </html>

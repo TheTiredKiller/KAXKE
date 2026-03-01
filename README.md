@@ -16,6 +16,7 @@ Redesigned multi-page static website for DAYSXLOVE with:
 
 ## Notes
 Announcements are stored in browser `localStorage` under `kaxkeAnnouncements`.
+Suggestions are stored in browser `localStorage` under `daysxloveSuggestions` and can be viewed in Admin Access popup inbox.
 
 
 Admin access requires an approved email and the password `DaysXNight20132012`.
