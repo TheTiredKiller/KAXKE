@@ -1,6 +1,6 @@
-# KAXKE Website
+# DAYSXLOVE Website
 
-Redesigned multi-page static website for KAXKE with:
+Redesigned multi-page static website for DAYSXLOVE with:
 
 - Homepage announcement feed
 - Admin-only announcement posting page
