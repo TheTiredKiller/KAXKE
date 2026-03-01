@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAYSXLOVE | Admin Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <h1 class="brand">DAYSXLOVE</h1>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="members.html">Members</a>
+                <a href="suggestions.html">Suggestions</a>
+                <a href="admin-login.html">Admin Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Admin Access Login</h2>
+            <p>Log in with your approved admin email and password to post announcements.</p>
+        </section>
+
+        <section class="grid">
+            <form id="adminLoginForm" class="card form-card">
+                <label for="email">Admin Email</label>
+                <input type="text" id="email" name="email" placeholder="name@example.com" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter password" required>
+
+                <input type="submit" value="Log In">
+            </form>
+
+            <article class="card">
+                <h3>Approved Admins</h3>
+                <ul class="list">
+                    <li>JPhanton</li>
+                    <li>NXLKeplit</li>
+                </ul>
+                <p class="muted">Successful login redirects to announcement posting.</p>
+            </article>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">DAYSXLOVE official webpage.</div>
+    </footer>
+
+    <script>
+        const adminLoginForm = document.getElementById('adminLoginForm');
+
+        const adminAliases = {
+            'julianatservice@gmail.com': 'JPhanton',
+            'dvnpaul28@gmail.com': 'NXLKeplit'
+        };
+
+        const adminPassword = 'DaysXNight20132012';
+
+        adminLoginForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const emailInput = document.getElementById('email').value.trim().toLowerCase();
+            const passwordInput = document.getElementById('password').value;
+
+            if (!Object.prototype.hasOwnProperty.call(adminAliases, emailInput)) {
+                alert('This email does not have admin access.');
+                return;
+            }
+
+            if (passwordInput !== adminPassword) {
+                alert('Incorrect password.');
+                return;
+            }
+
+            sessionStorage.setItem('kaxkeAdminAuthenticated', 'true');
+            sessionStorage.setItem('kaxkeAdminEmail', emailInput);
+            window.location.href = 'recieve.html';
+        });
+    </script>
+</body>
+</html>

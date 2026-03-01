@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAYSXLOVE | Admin Access</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <h1 class="brand">DAYSXLOVE</h1>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="members.html">Members</a>
+                <a href="suggestions.html">Suggestions</a>
+                <a href="admin-login.html">Admin Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Announcement Admin Access</h2>
+            <p>Post announcements and review incoming suggestions.</p>
+        </section>
+
+        <section class="grid">
+            <form id="announcementForm" class="card form-card">
+                <p class="muted" id="loggedInAs"></p>
+
+                <label for="announcement">Announcement</label>
+                <textarea id="announcement" name="announcement" placeholder="Write an update..." required></textarea>
+
+                <input type="submit" value="Post Announcement">
+            </form>
+
+            <article class="card">
+                <h3>Suggestions Inbox</h3>
+                <p class="muted">Click a suggestion to open it in a popup.</p>
+                <div id="suggestionInbox" class="suggestion-inbox"></div>
+            </article>
+        </section>
+    </main>
+
+    <div id="suggestionModal" class="modal" aria-hidden="true">
+        <div class="modal-content">
+            <button id="closeModal" class="modal-close" type="button">×</button>
+            <h3 id="modalTitle">Suggestion</h3>
+            <p id="modalBody" class="muted"></p>
+            <p id="modalTime" class="muted"></p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">DAYSXLOVE official webpage.</div>
+    </footer>
+
+    <script>
+        const announcementForm = document.getElementById('announcementForm');
+        const messageInput = document.getElementById('announcement');
+        const loggedInAs = document.getElementById('loggedInAs');
+        const suggestionInbox = document.getElementById('suggestionInbox');
+        const suggestionModal = document.getElementById('suggestionModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const modalTime = document.getElementById('modalTime');
+
+        const adminAliases = {
+            'julianatservice@gmail.com': 'JPhanton',
+            'dvnpaul28@gmail.com': 'NXLKeplit'
+        };
+
+        const isAuthenticated = sessionStorage.getItem('kaxkeAdminAuthenticated') === 'true';
+        const sessionAdminEmail = (sessionStorage.getItem('kaxkeAdminEmail') || '').toLowerCase();
+
+        if (!isAuthenticated || !Object.prototype.hasOwnProperty.call(adminAliases, sessionAdminEmail)) {
+            window.location.href = 'admin-login.html';
+        } else {
+            loggedInAs.textContent = 'Logged in as: ' + adminAliases[sessionAdminEmail];
+        }
+
+        function renderSuggestions() {
+            const savedSuggestions = JSON.parse(localStorage.getItem('daysxloveSuggestions') || '[]');
+
+            if (savedSuggestions.length === 0) {
+                suggestionInbox.innerHTML = '<p class="muted">No suggestions yet.</p>';
+                return;
+            }
+
+            suggestionInbox.innerHTML = savedSuggestions
+                .slice()
+                .reverse()
+                .map(function (item, index) {
+                    const safeName = item.name || 'Anonymous';
+                    const preview = (item.message || '').slice(0, 70);
+                    const originalIndex = savedSuggestions.length - 1 - index;
+                    return '<button class="suggestion-entry" type="button" data-index="' + originalIndex + '"><strong>' + safeName + ':</strong> ' + preview + (item.message.length > 70 ? '…' : '') + '</button>';
+                })
+                .join('');
+
+            suggestionInbox.querySelectorAll('.suggestion-entry').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const item = savedSuggestions[Number(button.dataset.index)];
+                    modalTitle.textContent = 'Suggestion from ' + (item.name || 'Anonymous');
+                    modalBody.textContent = item.message || '';
+                    modalTime.textContent = item.createdAt ? 'Sent: ' + new Date(item.createdAt).toLocaleString() : '';
+                    suggestionModal.classList.add('show');
+                    suggestionModal.setAttribute('aria-hidden', 'false');
+                });
+            });
+        }
+
+        closeModal.addEventListener('click', function () {
+            suggestionModal.classList.remove('show');
+            suggestionModal.setAttribute('aria-hidden', 'true');
+        });
+
+        suggestionModal.addEventListener('click', function (event) {
+            if (event.target === suggestionModal) {
+                suggestionModal.classList.remove('show');
+                suggestionModal.setAttribute('aria-hidden', 'true');
+            }
+        });
+
+        announcementForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const message = messageInput.value.trim();
+            if (!message) {
+                return;
+            }
+
+            const savedAnnouncements = JSON.parse(localStorage.getItem('kaxkeAnnouncements') || '[]');
+            savedAnnouncements.push({
+                email: sessionAdminEmail,
+                author: adminAliases[sessionAdminEmail],
+                message: message
+            });
+            localStorage.setItem('kaxkeAnnouncements', JSON.stringify(savedAnnouncements));
+
+            window.location.href = 'index.html';
+        });
+
+        renderSuggestions();
+    </script>
+</body>
+</html>

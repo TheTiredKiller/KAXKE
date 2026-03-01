@@ -1,2 +1,22 @@
-# KAXKE
-The Official Kaxke Webpage
+# DAYSXLOVE Website
+
+Redesigned multi-page static website for DAYSXLOVE with:
+
+- Homepage announcement feed
+- Admin-only announcement posting page
+- Members page
+- Suggestions form page
+
+## Pages
+- `index.html` — public homepage + announcements display
+- `admin-login.html` — admin email + password login
+- `recieve.html` — authenticated admin posting form for announcements
+- `members.html` — member profiles
+- `suggestions.html` — suggestion form
+
+## Notes
+Announcements are stored in browser `localStorage` under `kaxkeAnnouncements`.
+Suggestions are stored in browser `localStorage` under `daysxloveSuggestions` and can be viewed in Admin Access popup inbox.
+
+
+Admin access requires an approved email and the password `DaysXNight20132012`.
