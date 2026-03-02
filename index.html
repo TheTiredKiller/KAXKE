@@ -1,55 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>KAXKE Webpage</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAYSXLOVE | Home</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <h1>Welcome to the KAXKE Webpage</h1>
-    <h4>The following links below are the suggestions, info, members, and etc.</h4>
-
-    <div class="main-container">
-        <!-- Left column: links -->
-        <div class="links">
-            <a href="suggestions.html">Suggestions</a><br>
-            <a href="https://www.youtube.com/@YourLovelyKeplit">Youtube</a><br>
-            <a href="members.html">Members</a><br>
-            <a href="https://genius.com/KAXKE">Genius</a>
+    <header class="site-header">
+        <div class="container header-inner">
+            <h1 class="brand">DAYSXLOVE</h1>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="members.html">Members</a>
+                <a href="suggestions.html">Suggestions</a>
+                <a href="admin-login.html">Admin Login</a>
+            </nav>
         </div>
+    </header>
 
-        <!-- Right column: announcements -->
-        <div class="announcements">
-            <h2>Announcements</h2>
-            
-            <form id="announcementForm" action="https://formspree.io/f/xlgwnppn" method="POST">
-                <label for="email">Email:</label><br>
-                <input type="text" id="email" name="email" placeholder="Your email" required><br><br>
+    <main class="container">
+        <section class="hero">
+            <h2>Official DAYSXLOVE Hub</h2>
+            <p>Stay updated with the latest group announcements, send feedback, and quickly jump to official DAYSXLOVE links.</p>
+        </section>
 
-                <label for="announcement">Announcement:</label><br>
-                <textarea id="announcement" name="announcement" placeholder="Type announcement" required></textarea><br><br>
+        <section class="grid">
+            <article class="card">
+                <h3>Quick Links</h3>
+                <div class="nav-links">
+                    <a href="https://www.youtube.com/@YourLovelyKeplit" target="_blank" rel="noopener noreferrer">YouTube</a>
+                    <a href="https://genius.com/KAXKE" target="_blank" rel="noopener noreferrer">Genius</a>
+                </div>
+            </article>
 
-                <input type="submit" value="Post">
-            </form>
+            <article class="card">
+                <span class="tag">Live Feed</span>
+                <h3>Announcements</h3>
+                <p class="muted">Posting is restricted to approved admins on the Admin Access page.</p>
+                <div id="announcementList"></div>
+            </article>
+        </section>
+    </main>
 
-            <div class="announcement-item">
-                <p><strong>Admin:</strong> Welcome to the KAXKE announcements!</p>
-            </div>
-        </div>
-    </div>
+    <footer class="footer">
+        <div class="container">DAYSXLOVE official webpage.</div>
+    </footer>
 
     <script>
-        const form = document.getElementById('announcementForm');
-        const emailInput = document.getElementById('email');
+        const announcementList = document.getElementById('announcementList');
+        const savedAnnouncements = JSON.parse(localStorage.getItem('kaxkeAnnouncements') || '[]');
 
-        form.addEventListener('submit', function(e) {
-            const allowedEmail = 'dvnpaul28@gmail.com';
-            if(emailInput.value.trim() !== allowedEmail) {
-                e.preventDefault();
-                alert('You do not have access to post announcements.');
-            }
-        });
+        const adminAliases = {
+            'jphantom@daysxlove.com': 'JPhantom',
+            'nxlkeplit@daysxlove.com': 'NXLKeplit',
+            'nxljhules@daysxlove.com': 'NXLJhules'
+        };
+
+        if (savedAnnouncements.length === 0) {
+            announcementList.innerHTML = '<p class="announcement-item"><strong>Admin:</strong> Welcome to the DAYSXLOVE page.</p>';
+        } else {
+            announcementList.innerHTML = savedAnnouncements
+                .slice()
+                .reverse()
+                .map(function (item) {
+                    const displayName = item.author || adminAliases[item.email] || 'Admin';
+                    return '<p class="announcement-item"><strong>' + displayName + ':</strong> ' + item.message + '</p>';
+                })
+                .join('');
+        }
     </script>
-
 </body>
 </html>

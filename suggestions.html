@@ -1,70 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Suggestion Form</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: lightblue;
-            text-align: center;
-            padding: 40px;
-        }
-
-        form {
-            background-color: white;
-            display: inline-block;
-            padding: 20px 30px;
-            border-radius: 12px;
-            border: 2px solid black;
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        textarea {
-            width: 250px;
-            padding: 8px;
-            border: 2px solid black;
-            border-radius: 8px;
-        }
-
-        textarea {
-            height: 100px;
-            resize: none;
-        }
-
-        input[type="submit"] {
-            margin-top: 15px;
-            padding: 8px 20px;
-            border: none;
-            border-radius: 8px;
-            background-color: cyan;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        input[type="submit"]:hover {
-            background-color: lightgreen;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAYSXLOVE | Suggestions</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <h1 class="brand">DAYSXLOVE</h1>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="members.html">Members</a>
+                <a href="suggestions.html">Suggestions</a>
+                <a href="admin-login.html">Admin Login</a>
+            </nav>
+        </div>
+    </header>
 
-    <h1>Send Your Suggestion</h1>
+    <main class="container">
+        <section class="hero">
+            <h2>Send a Suggestion</h2>
+            <p>Share your ideas to help improve music releases, content, and community updates.</p>
+        </section>
 
-    <form action="https://formspree.io/f/xlgwnppn" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" placeholder="Your name" required>
+        <section class="grid">
+            <form class="card form-card" action="https://formspree.io/f/xlgwnppn" method="POST">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your name" required>
 
-        <label for="suggestion">Suggestion:</label>
-        <textarea id="suggestion" name="suggestion" placeholder="Your suggestion" required></textarea>
+                <label for="suggestion">Suggestion</label>
+                <textarea id="suggestion" name="suggestion" placeholder="Write your suggestion" required></textarea>
 
-        <input type="submit" value="Send">
-    </form>
+                <input type="submit" value="Send Suggestion">
+            </form>
 
+            <article class="card">
+                <h3>What to submit</h3>
+                <ul class="list">
+                    <li>Music topic requests</li>
+                    <li>Video/content ideas</li>
+                    <li>Constructive feedback for improvements</li>
+                </ul>
+            </article>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">DAYSXLOVE official webpage.</div>
+    </footer>
 </body>
 </html>
