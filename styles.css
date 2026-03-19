@@ -301,6 +301,23 @@ body.transition-enabled.page-exit {
     transform: translateY(-1px);
 }
 
+.group-chat-card {
+    min-height: 210px;
+}
+
+.chat-status {
+    margin: 16px 0 0;
+    font-weight: 700;
+}
+
+.chat-allowed {
+    color: var(--accent);
+}
+
+.chat-denied {
+    color: var(--danger);
+}
+
 @media (max-width: 640px) {
     .header-inner {
         flex-direction: column;

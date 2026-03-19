@@ -67,23 +67,14 @@
             <section class="hero">
                 <h2>Chats</h2>
                 <p>Use this page as the chat hub for your group space.</p>
+                <p id="chatIdentity" class="muted"></p>
             </section>
 
-            <section class="grid">
-                <article class="card">
-                    <span class="tag">Chat Space</span>
-                    <h3>Community Chats</h3>
-                    <p class="muted">This page is ready for chat links, group rooms, member conversations, or future messaging features.</p>
-                </article>
-
-                <article class="card">
-                    <span class="tag">Coming Soon</span>
-                    <h3>Set This Up Your Way</h3>
-                    <p class="muted">You can turn this into a live chat page, a list of chatrooms, or a links page for Discord, Messenger, or other chat platforms.</p>
-                </article>
-            </section>
+            <section id="groupChatGrid" class="grid"></section>
         </section>
     </main>
+
+    <button id="chatLogoutButton" class="logout-button hidden-view" type="button">Log Out</button>
 
     <footer class="footer">
         <div class="container">S: No Energy official webpage.</div>
@@ -93,23 +84,85 @@
     <script>
         const chatLoginView = document.getElementById('chatLoginView');
         const chatContentView = document.getElementById('chatContentView');
+        const chatIdentity = document.getElementById('chatIdentity');
+        const groupChatGrid = document.getElementById('groupChatGrid');
         const chatLoginForm = document.getElementById('chatLoginForm');
+        const chatLogoutButton = document.getElementById('chatLogoutButton');
         const chatConfig = window.SNOENERGY_CHAT_CONFIG || {};
         const chatAuthKey = chatConfig.storageKeys ? chatConfig.storageKeys.auth : 'syn4rgyChatAuthenticated';
         const chatEmailKey = chatConfig.storageKeys ? chatConfig.storageKeys.email : 'syn4rgyChatEmail';
         const chatUsers = chatConfig.users || {};
         const chatPasswords = chatConfig.passwords || {};
+        const groupChats = [
+            {
+                name: 'SYN4RGY',
+                audience: 'SYN4RGY members and Kim Arie',
+                members: [
+                    'xxkeplitxx@snoenergy.com',
+                    'jphantom@snoenergy.com',
+                    'xlzjhules@snoenergy.com',
+                    'xle-rinluvx@snoenergy.com',
+                    'kimarie@snoenergy.com'
+                ]
+            },
+            {
+                name: 'S: No Energy',
+                audience: 'All groups in S: No Energy',
+                members: Object.keys(chatUsers)
+            },
+            {
+                name: 'Dyumdai',
+                audience: 'Dyumdai members and xXKeplitXx',
+                members: [
+                    'kimarie@snoenergy.com',
+                    'daechikim@snoenergy.com',
+                    'zerunvae@snoenergy.com',
+                    'kaelisjun@snoenergy.com',
+                    'myroshin@snoenergy.com',
+                    'tavienkyo@snoenergy.com',
+                    'yuripark@snoenergy.com',
+                    'alexkang@snoenergy.com',
+                    'jakelee@snoenergy.com',
+                    'kyunjongchoi@snoenergy.com',
+                    'xxkeplitxx@snoenergy.com'
+                ]
+            }
+        ];
 
-        function openChatView() {
+        function renderGroupChats(email) {
+            const displayName = chatUsers[email] || email;
+            chatIdentity.textContent = 'Logged in as: ' + displayName;
+            groupChatGrid.innerHTML = groupChats.map(function (group) {
+                const hasAccess = group.members.indexOf(email) !== -1;
+                return '<article class="card group-chat-card">' +
+                    '<span class="tag">Group Chat</span>' +
+                    '<h3>' + group.name + '</h3>' +
+                    '<p class="muted">For: ' + group.audience + '</p>' +
+                    '<p class="chat-status ' + (hasAccess ? 'chat-allowed' : 'chat-denied') + '">' +
+                    (hasAccess ? 'Access granted' : 'No access for this account') +
+                    '</p>' +
+                    '</article>';
+            }).join('');
+        }
+
+        function openChatView(email) {
             chatLoginView.classList.add('hidden-view');
             chatContentView.classList.remove('hidden-view');
+            chatLogoutButton.classList.remove('hidden-view');
+            renderGroupChats(email);
+        }
+
+        function openLoginView() {
+            chatContentView.classList.add('hidden-view');
+            chatLoginView.classList.remove('hidden-view');
+            chatLogoutButton.classList.add('hidden-view');
         }
 
         const savedChatEmail = (localStorage.getItem(chatEmailKey) || '').toLowerCase();
         const chatAuthenticated = localStorage.getItem(chatAuthKey) === 'true';
 
         if (chatAuthenticated && Object.prototype.hasOwnProperty.call(chatUsers, savedChatEmail)) {
-            openChatView();
+            openChatView(savedChatEmail);
         }
 
         chatLoginForm.addEventListener('submit', function (event) {
@@ -130,7 +183,14 @@
 
             localStorage.setItem(chatAuthKey, 'true');
             localStorage.setItem(chatEmailKey, emailInput);
-            openChatView();
+            openChatView(emailInput);
+        });
+
+        chatLogoutButton.addEventListener('click', function () {
+            localStorage.removeItem(chatAuthKey);
+            localStorage.removeItem(chatEmailKey);
+            chatLoginForm.reset();
+            openLoginView();
         });
     </script>
 </body>
