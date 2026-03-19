@@ -70,6 +70,16 @@
                 <p id="chatIdentity" class="muted"></p>
             </section>
 
+            <section class="grid">
+                <article class="card">
+                    <span class="tag">Private Chat</span>
+                    <h3>Search Members</h3>
+                    <label for="memberSearch" class="muted">Find an S: No Energy member to start a private chat.</label>
+                    <input type="text" id="memberSearch" class="chat-search" placeholder="Search member name...">
+                    <div id="memberSearchResults" class="private-chat-results"></div>
+                </article>
+            </section>
+
             <section id="groupChatGrid" class="grid"></section>
         </section>
     </main>
@@ -86,6 +96,8 @@
         const chatLoginView = document.getElementById('chatLoginView');
         const chatContentView = document.getElementById('chatContentView');
         const chatIdentity = document.getElementById('chatIdentity');
+        const memberSearch = document.getElementById('memberSearch');
+        const memberSearchResults = document.getElementById('memberSearchResults');
         const groupChatGrid = document.getElementById('groupChatGrid');
         const chatLoginForm = document.getElementById('chatLoginForm');
         const chatLogoutButton = document.getElementById('chatLogoutButton');
@@ -95,10 +107,41 @@
         const chatUsers = chatConfig.users || {};
         const chatPasswords = chatConfig.passwords || {};
         const groupChats = window.SNOENERGY_CHAT_ROOMS || [];
+        let activeChatEmail = '';
+
+        function renderPrivateChatResults(email, searchTerm) {
+            const normalizedSearch = (searchTerm || '').trim().toLowerCase();
+            const filteredMembers = Object.keys(chatUsers).filter(function (memberEmail) {
+                if (memberEmail === email) {
+                    return false;
+                }
+
+                const memberName = chatUsers[memberEmail] || memberEmail;
+                return !normalizedSearch || memberName.toLowerCase().indexOf(normalizedSearch) !== -1;
+            });
+
+            if (filteredMembers.length === 0) {
+                memberSearchResults.innerHTML = '<p class="muted">No members found.</p>';
+                return;
+            }
+
+            memberSearchResults.innerHTML = filteredMembers.map(function (memberEmail) {
+                const memberName = chatUsers[memberEmail] || memberEmail;
+                return '<div class="private-chat-entry">' +
+                    '<div>' +
+                    '<p class="private-chat-name">' + memberName + '</p>' +
+                    '<p class="muted private-chat-email">' + memberEmail + '</p>' +
+                    '</div>' +
+                    '<a class="button-link" href="private-chat.html?user=' + encodeURIComponent(memberEmail) + '">Private Chat</a>' +
+                    '</div>';
+            }).join('');
+        }
 
         function renderGroupChats(email) {
             const displayName = chatUsers[email] || email;
+            activeChatEmail = email;
             chatIdentity.textContent = 'Logged in as: ' + displayName;
+            renderPrivateChatResults(email, memberSearch.value);
             groupChatGrid.innerHTML = groupChats.map(function (group) {
                 const hasAccess = group.members.indexOf(email) !== -1;
                 return '<article class="card group-chat-card">' +
@@ -125,6 +168,8 @@
             chatContentView.classList.add('hidden-view');
             chatLoginView.classList.remove('hidden-view');
             chatLogoutButton.classList.add('hidden-view');
+            memberSearch.value = '';
+            memberSearchResults.innerHTML = '';
         }
 
         const savedChatEmail = (localStorage.getItem(chatEmailKey) || '').toLowerCase();
@@ -160,6 +205,14 @@
             localStorage.removeItem(chatEmailKey);
             chatLoginForm.reset();
             openLoginView();
+        });
+
+        memberSearch.addEventListener('input', function () {
+            if (!activeChatEmail) {
+                return;
+            }
+
+            renderPrivateChatResults(activeChatEmail, memberSearch.value);
         });
     </script>
 </body>

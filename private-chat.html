@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S: No Energy | Private Chat</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="index.html" aria-label="S: No Energy home">
+                <span class="brand-text">S: No Energy</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="members.html">Members</a>
+                <a href="Chats.html">Chats</a>
+                <a href="suggestions.html">Suggestions</a>
+                <a href="Admin-login.html">Admin Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h2 id="privateChatTitle">Private Chat</h2>
+            <p class="muted">Messenger-style private chat for S: No Energy members.</p>
+        </section>
+
+        <section class="messenger-layout">
+            <aside class="card messenger-sidebar">
+                <div class="messenger-sidebar-top">
+                    <h3>Members</h3>
+                    <p id="privateChatIdentity" class="muted"></p>
+                    <input type="text" id="privateMemberSearch" class="chat-search" placeholder="Search members...">
+                </div>
+                <div id="privateMemberList" class="messenger-contact-list"></div>
+                <div class="card-actions">
+                    <a class="button-link" href="Chats.html">Back to Chats</a>
+                </div>
+            </aside>
+
+            <section class="card messenger-thread">
+                <div class="messenger-thread-header">
+                    <h3 id="privateChatSubtitle"></h3>
+                    <p class="muted">Text chat only. Firebase Storage is not needed.</p>
+                </div>
+                <div id="privateChatMessages" class="chat-messages messenger-messages">
+                    <p class="muted">Loading messages...</p>
+                </div>
+                <form id="privateChatForm" class="messenger-composer">
+                    <textarea id="privateChatMessage" name="privateChatMessage" placeholder="Type your message..." required></textarea>
+                    <button type="submit" class="messenger-send">Send</button>
+                </form>
+            </section>
+        </section>
+    </main>
+
+    <button id="privateChatLogoutButton" class="logout-button" type="button">Log Out</button>
+
+    <footer class="footer">
+        <div class="container">S: No Energy official webpage.</div>
+    </footer>
+
+    <script src="Chats-Access.JS"></script>
+    <script src="private-chat.js"></script>
+</body>
+</html>
