@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DAYSXLOVE | Admin Access</title>
+    <title>S: No Energy | Admin Access</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="Site-Transition.js" defer></script>
 </head>
 <body>
     <header class="site-header">
         <div class="container header-inner">
-            <h1 class="brand">DAYSXLOVE</h1>
+            <a class="brand" href="index.html" aria-label="S: No Energy home">
+                <img src="images/logo.png" alt="S: No Energy logo" class="brand-logo">
+            </a>
             <nav class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="members.html">Members</a>
+                <a href="Chats.html">Chats</a>
                 <a href="suggestions.html">Suggestions</a>
                 <a href="admin-login.html">Admin Login</a>
             </nav>
@@ -29,8 +33,12 @@
             <form id="announcementForm" class="card form-card">
                 <p class="muted" id="loggedInAs"></p>
 
-                <label for="announcement">Announcement</label>
-                <textarea id="announcement" name="announcement" placeholder="Write an update..." required></textarea>
+                <label for="announcementEditor">Announcement</label>
+                <div class="editor-toolbar" aria-label="Announcement formatting tools">
+                    <button type="button" class="editor-button" data-command="underline"><u>U</u></button>
+                </div>
+                <div id="announcementEditor" class="rich-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Write an update..."></div>
+                <input type="hidden" id="announcement" name="announcement" required>
 
                 <input type="submit" value="Post Announcement">
             </form>
@@ -43,6 +51,8 @@
         </section>
     </main>
 
+    <button id="logoutButton" class="logout-button" type="button">Log Out</button>
+
     <div id="suggestionModal" class="modal" aria-hidden="true">
         <div class="modal-content">
             <button id="closeModal" class="modal-close" type="button">×</button>
@@ -53,12 +63,13 @@
     </div>
 
     <footer class="footer">
-        <div class="container">DAYSXLOVE official webpage.</div>
+        <div class="container">S: No Energy official webpage.</div>
     </footer>
 
     <script>
         const announcementForm = document.getElementById('announcementForm');
         const messageInput = document.getElementById('announcement');
+        const editor = document.getElementById('announcementEditor');
         const loggedInAs = document.getElementById('loggedInAs');
         const suggestionInbox = document.getElementById('suggestionInbox');
         const suggestionModal = document.getElementById('suggestionModal');
@@ -66,21 +77,66 @@
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
         const modalTime = document.getElementById('modalTime');
+        const logoutButton = document.getElementById('logoutButton');
+        const authStorageKey = 'kaxkeAdminAuthenticated';
+        const emailStorageKey = 'kaxkeAdminEmail';
 
         const adminAliases = {
-            'jphantom@daysxlove.com': 'JPhantom',
-            'nxlkeplit@daysxlove.com': 'NXLKeplit',
-            'nxljhules@daysxlove.com': 'NXLJhules'
+            'daysxlove@gmail.com': 'SYN4RGY',
+            'dxl.x.dyd@gmail.com': 'Dyumdai'
         };
 
-        const isAuthenticated = sessionStorage.getItem('kaxkeAdminAuthenticated') === 'true';
-        const sessionAdminEmail = (sessionStorage.getItem('kaxkeAdminEmail') || '').toLowerCase();
+        const isAuthenticated = localStorage.getItem(authStorageKey) === 'true';
+        const sessionAdminEmail = (localStorage.getItem(emailStorageKey) || '').toLowerCase();
 
         if (!isAuthenticated || !Object.prototype.hasOwnProperty.call(adminAliases, sessionAdminEmail)) {
             window.location.href = 'admin-login.html';
         } else {
             loggedInAs.textContent = 'Logged in as: ' + adminAliases[sessionAdminEmail];
         }
+
+        function sanitizeAnnouncementHtml(html) {
+            const container = document.createElement('div');
+            container.innerHTML = html;
+
+            function cleanNode(node) {
+                Array.from(node.children).forEach(function (child) {
+                    const tagName = child.tagName.toLowerCase();
+                    const allowedTags = ['u', 'br', 'div', 'p'];
+
+                    if (!allowedTags.includes(tagName)) {
+                        child.replaceWith(document.createTextNode(child.textContent || ''));
+                        return;
+                    }
+
+                    Array.from(child.attributes).forEach(function (attribute) {
+                        child.removeAttribute(attribute.name);
+                    });
+
+                    cleanNode(child);
+                });
+            }
+
+            cleanNode(container);
+            return container.innerHTML
+                .replace(/<(div|p)><br><\/(div|p)>/gi, '<br>')
+                .replace(/<\/(div|p)>\s*<(div|p)>/gi, '<br>')
+                .replace(/<(div|p)>/gi, '')
+                .replace(/<\/(div|p)>/gi, '')
+                .trim();
+        }
+
+        document.querySelectorAll('.editor-button').forEach(function (button) {
+            button.addEventListener('click', function () {
+                editor.focus();
+                document.execCommand(button.dataset.command, false);
+                messageInput.value = sanitizeAnnouncementHtml(editor.innerHTML);
+            });
+        });
+
+        editor.addEventListener('input', function () {
+            messageInput.value = sanitizeAnnouncementHtml(editor.innerHTML);
+        });
 
         function renderSuggestions() {
             const savedSuggestions = JSON.parse(localStorage.getItem('daysxloveSuggestions') || '[]');
@@ -125,13 +181,23 @@
             }
         });
 
+        logoutButton.addEventListener('click', function () {
+            localStorage.removeItem(authStorageKey);
+            localStorage.removeItem(emailStorageKey);
+            window.location.href = 'admin-login.html';
+        });
+
         announcementForm.addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const message = messageInput.value.trim();
-            if (!message) {
+            const message = sanitizeAnnouncementHtml(editor.innerHTML);
+            const plainText = editor.textContent.trim();
+
+            if (!plainText) {
                 return;
             }
+
+            messageInput.value = message;
 
             const savedAnnouncements = JSON.parse(localStorage.getItem('kaxkeAnnouncements') || '[]');
             savedAnnouncements.push({

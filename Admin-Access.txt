@@ -1,0 +1,12 @@
+SYN4RGY Admin Access (local site config)
+
+SYN4RGY - daysxlove@gmail.com
+Dyumdai - dxl.x.dyd@gmail.com
+
+Passwords:
+- SYN4RGY: syn4rgy
+- Dyumdai: doyoucare
+
+Notes:
+- This project uses local browser checks only (no Firebase / OAuth provider).
+- Source of truth in code: admin-access.js

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S: No Energy | Chats</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="index.html" aria-label="S: No Energy home">
+                <img src="images/logo.png" alt="S: No Energy logo" class="brand-logo">
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="members.html">Members</a>
+                <a href="Chats.html">Chats</a>
+                <a href="suggestions.html">Suggestions</a>
+                <a href="admin-login.html">Admin Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="chatLoginView">
+            <section class="hero">
+                <h2>Chats Login</h2>
+                <p>Sign in first before opening the chats page.</p>
+            </section>
+
+            <section class="grid">
+                <form id="chatLoginForm" class="card form-card">
+                    <label for="chatEmail">Email</label>
+                    <input type="text" id="chatEmail" name="chatEmail" placeholder="name@snoenergy.com" required>
+
+                    <label for="chatPassword">Password</label>
+                    <input type="password" id="chatPassword" name="chatPassword" placeholder="Enter password" required>
+
+                    <input type="submit" value="Open Chats">
+                </form>
+
+                <article class="card">
+                    <h3>Member Access</h3>
+                    <p class="muted">Only S: No Energy members can access these chats.</p>
+                    <ul class="list scroll-list">
+                        <li>Kim Arie</li>
+                        <li>Dae-Chi Kim</li>
+                        <li>Zerun Vae</li>
+                        <li>Kaelis Jun</li>
+                        <li>Myro Shin</li>
+                        <li>Tavien Kyo</li>
+                        <li>Yuri Park</li>
+                        <li>Alex Kang</li>
+                        <li>Jake Lee</li>
+                        <li>Kyun-Jong Choi</li>
+                        <li>xXKeplitXx</li>
+                        <li>JPhantom</li>
+                        <li>XLZJhules</li>
+                        <li>XLE-RinLuvX</li>
+                    </ul>
+                </article>
+            </section>
+        </section>
+
+        <section id="chatContentView" class="hidden-view">
+            <section class="hero">
+                <h2>Chats</h2>
+                <p>Use this page as the chat hub for your group space.</p>
+            </section>
+
+            <section class="grid">
+                <article class="card">
+                    <span class="tag">Chat Space</span>
+                    <h3>Community Chats</h3>
+                    <p class="muted">This page is ready for chat links, group rooms, member conversations, or future messaging features.</p>
+                </article>
+
+                <article class="card">
+                    <span class="tag">Coming Soon</span>
+                    <h3>Set This Up Your Way</h3>
+                    <p class="muted">You can turn this into a live chat page, a list of chatrooms, or a links page for Discord, Messenger, or other chat platforms.</p>
+                </article>
+            </section>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">S: No Energy official webpage.</div>
+    </footer>
+
+    <script src="Chats-Access.JS"></script>
+    <script>
+        const chatLoginView = document.getElementById('chatLoginView');
+        const chatContentView = document.getElementById('chatContentView');
+        const chatLoginForm = document.getElementById('chatLoginForm');
+        const chatConfig = window.SNOENERGY_CHAT_CONFIG || {};
+        const chatAuthKey = chatConfig.storageKeys ? chatConfig.storageKeys.auth : 'syn4rgyChatAuthenticated';
+        const chatEmailKey = chatConfig.storageKeys ? chatConfig.storageKeys.email : 'syn4rgyChatEmail';
+        const chatUsers = chatConfig.users || {};
+        const chatPasswords = chatConfig.passwords || {};
+
+        function openChatView() {
+            chatLoginView.classList.add('hidden-view');
+            chatContentView.classList.remove('hidden-view');
+        }
+
+        const savedChatEmail = (localStorage.getItem(chatEmailKey) || '').toLowerCase();
+        const chatAuthenticated = localStorage.getItem(chatAuthKey) === 'true';
+
+        if (chatAuthenticated && Object.prototype.hasOwnProperty.call(chatUsers, savedChatEmail)) {
+            openChatView();
+        }
+
+        chatLoginForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const emailInput = document.getElementById('chatEmail').value.trim().toLowerCase();
+            const passwordInput = document.getElementById('chatPassword').value;
+
+            if (!Object.prototype.hasOwnProperty.call(chatUsers, emailInput)) {
+                alert('This email does not have chats access.');
+                return;
+            }
+
+            if (passwordInput !== chatPasswords[emailInput]) {
+                alert('Incorrect password.');
+                return;
+            }
+
+            localStorage.setItem(chatAuthKey, 'true');
+            localStorage.setItem(chatEmailKey, emailInput);
+            openChatView();
+        });
+    </script>
+</body>
+</html>

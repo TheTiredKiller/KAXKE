@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DAYSXLOVE | Home</title>
+    <title>S: No Energy | Home</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="Site-Transition.js" defer></script>
 </head>
 <body>
     <header class="site-header">
         <div class="container header-inner">
-            <h1 class="brand">DAYSXLOVE</h1>
+            <a class="brand" href="index.html" aria-label="S: No Energy home">
+                <img src="images/logo.png" alt="S: No Energy logo" class="brand-logo">
+            </a>
             <nav class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="members.html">Members</a>
+                <a href="Chats.html">Chats</a>
                 <a href="suggestions.html">Suggestions</a>
                 <a href="admin-login.html">Admin Login</a>
             </nav>
@@ -21,19 +25,11 @@
 
     <main class="container">
         <section class="hero">
-            <h2>Official DAYSXLOVE Hub</h2>
-            <p>Stay updated with the latest group announcements, send feedback, and quickly jump to official DAYSXLOVE links.</p>
+            <h2>Official S: No Energy Hub</h2>
+            <p>Stay updated with the latest group announcements, send feedback, and quickly jump to official S: No Energy links.</p>
         </section>
 
         <section class="grid">
-            <article class="card">
-                <h3>Quick Links</h3>
-                <div class="nav-links">
-                    <a href="https://www.youtube.com/@YourLovelyKeplit" target="_blank" rel="noopener noreferrer">YouTube</a>
-                    <a href="https://genius.com/KAXKE" target="_blank" rel="noopener noreferrer">Genius</a>
-                </div>
-            </article>
-
             <article class="card">
                 <span class="tag">Live Feed</span>
                 <h3>Announcements</h3>
@@ -44,7 +40,7 @@
     </main>
 
     <footer class="footer">
-        <div class="container">DAYSXLOVE official webpage.</div>
+        <div class="container">S: No Energy official webpage.</div>
     </footer>
 
     <script>
@@ -52,20 +48,57 @@
         const savedAnnouncements = JSON.parse(localStorage.getItem('kaxkeAnnouncements') || '[]');
 
         const adminAliases = {
-            'jphantom@daysxlove.com': 'JPhantom',
-            'nxlkeplit@daysxlove.com': 'NXLKeplit',
-            'nxljhules@daysxlove.com': 'NXLJhules'
+            'daysxlove@gmail.com': 'SYN4RGY',
+            'dxl.x.dyd@gmail.com': 'Dyumdai'
         };
 
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function sanitizeAnnouncementHtml(html) {
+            const container = document.createElement('div');
+            container.innerHTML = html;
+
+            function cleanNode(node) {
+                Array.from(node.children).forEach(function (child) {
+                    const tagName = child.tagName.toLowerCase();
+                    const allowedTags = ['u', 'br'];
+
+                    if (!allowedTags.includes(tagName)) {
+                        child.replaceWith(document.createTextNode(child.textContent || ''));
+                        return;
+                    }
+
+                    Array.from(child.attributes).forEach(function (attribute) {
+                        child.removeAttribute(attribute.name);
+                    });
+
+                    cleanNode(child);
+                });
+            }
+
+            cleanNode(container);
+            return container.innerHTML;
+        }
+
         if (savedAnnouncements.length === 0) {
-            announcementList.innerHTML = '<p class="announcement-item"><strong>Admin:</strong> Welcome to the DAYSXLOVE page.</p>';
+            announcementList.innerHTML = '<p class="announcement-item"><strong>Admin:</strong> Welcome to the SYN4RGY page.</p>';
         } else {
             announcementList.innerHTML = savedAnnouncements
                 .slice()
                 .reverse()
                 .map(function (item) {
                     const displayName = item.author || adminAliases[item.email] || 'Admin';
-                    return '<p class="announcement-item"><strong>' + displayName + ':</strong> ' + item.message + '</p>';
+                    const safeMessage = item.message && item.message.indexOf('<') !== -1
+                        ? sanitizeAnnouncementHtml(item.message)
+                        : escapeHtml(item.message || '').replace(/\n/g, '<br>');
+                    return '<p class="announcement-item"><strong>' + escapeHtml(displayName) + ':</strong> <span class="announcement-body">' + safeMessage + '</span></p>';
                 })
                 .join('');
         }

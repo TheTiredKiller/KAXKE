@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DAYSXLOVE | Suggestions</title>
+    <title>S: No Energy | Suggestions</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="Site-Transition.js" defer></script>
 </head>
 <body>
     <header class="site-header">
         <div class="container header-inner">
-            <h1 class="brand">DAYSXLOVE</h1>
+            <a class="brand" href="index.html" aria-label="S: No Energy home">
+                <img src="images/logo.png" alt="S: No Energy logo" class="brand-logo">
+            </a>
             <nav class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="members.html">Members</a>
+                <a href="Chats.html">Chats</a>
                 <a href="suggestions.html">Suggestions</a>
                 <a href="admin-login.html">Admin Login</a>
             </nav>
@@ -26,7 +30,7 @@
         </section>
 
         <section class="grid">
-            <form class="card form-card" action="https://formspree.io/f/xlgwnppn" method="POST">
+            <form id="suggestionForm" class="card form-card">
                 <label for="name">Name</label>
                 <input type="text" id="name" name="name" placeholder="Your name" required>
 
@@ -48,7 +52,35 @@
     </main>
 
     <footer class="footer">
-        <div class="container">DAYSXLOVE official webpage.</div>
+        <div class="container">S: No Energy official webpage.</div>
     </footer>
+
+    <script>
+        const suggestionForm = document.getElementById('suggestionForm');
+
+        suggestionForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const nameInput = document.getElementById('name');
+            const suggestionInput = document.getElementById('suggestion');
+            const name = nameInput.value.trim();
+            const message = suggestionInput.value.trim();
+
+            if (!name || !message) {
+                return;
+            }
+
+            const savedSuggestions = JSON.parse(localStorage.getItem('daysxloveSuggestions') || '[]');
+            savedSuggestions.push({
+                name: name,
+                message: message,
+                createdAt: new Date().toISOString()
+            });
+            localStorage.setItem('daysxloveSuggestions', JSON.stringify(savedSuggestions));
+
+            alert('Suggestion sent to the admin inbox.');
+            suggestionForm.reset();
+        });
+    </script>
 </body>
 </html>

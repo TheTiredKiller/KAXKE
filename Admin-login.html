@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DAYSXLOVE | Admin Login</title>
+    <title>S: No Energy | Admin Login</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="Site-Transition.js" defer></script>
 </head>
 <body>
     <header class="site-header">
         <div class="container header-inner">
-            <h1 class="brand">DAYSXLOVE</h1>
+            <a class="brand" href="index.html" aria-label="S: No Energy home">
+                <img src="images/logo.png" alt="S: No Energy logo" class="brand-logo">
+            </a>
             <nav class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="members.html">Members</a>
+                <a href="Chats.html">Chats</a>
                 <a href="suggestions.html">Suggestions</a>
                 <a href="admin-login.html">Admin Login</a>
             </nav>
@@ -38,30 +42,37 @@
 
             <article class="card">
                 <h3>Approved Admins</h3>
-                <ul class="list">
-                    <li>JPhantom</li>
-                    <li>NXLKeplit</li>
-                    <li>NXLJhules</li>
-                </ul>
+                <p class="muted">Only approved admins can sign in and access announcement posting.</p>
                 <p class="muted">Successful login redirects to announcement posting.</p>
             </article>
         </section>
     </main>
 
     <footer class="footer">
-        <div class="container">DAYSXLOVE official webpage.</div>
+        <div class="container">S: No Energy official webpage.</div>
     </footer>
 
     <script>
         const adminLoginForm = document.getElementById('adminLoginForm');
+        const authStorageKey = 'kaxkeAdminAuthenticated';
+        const emailStorageKey = 'kaxkeAdminEmail';
 
         const adminAliases = {
-            'julianatservice@gmail.com': 'JPhantom',
-            'NXLKeplit@daysxlove.com': 'NXLKeplit',
-            'NXLJhules@daysxlove.com': 'NXLJhules'
+            'daysxlove@gmail.com': 'SYN4RGY',
+            'dxl.x.dyd@gmail.com': 'Dyumdai'
         };
 
-        const adminPassword = 'DAYSXLOVE20132012';
+        const adminPasswords = {
+            'daysxlove@gmail.com': 'syn4rgy',
+            'dxl.x.dyd@gmail.com': 'doyoucare'
+        };
+
+        const savedAdminEmail = (localStorage.getItem(emailStorageKey) || '').toLowerCase();
+        const isAuthenticated = localStorage.getItem(authStorageKey) === 'true';
+
+        if (isAuthenticated && Object.prototype.hasOwnProperty.call(adminAliases, savedAdminEmail)) {
+            window.location.href = 'recieve.html';
+        }
 
         adminLoginForm.addEventListener('submit', function (event) {
             event.preventDefault();
@@ -74,13 +85,13 @@
                 return;
             }
 
-            if (passwordInput !== adminPassword) {
+            if (passwordInput !== adminPasswords[emailInput]) {
                 alert('Incorrect password.');
                 return;
             }
 
-            sessionStorage.setItem('kaxkeAdminAuthenticated', 'true');
-            sessionStorage.setItem('kaxkeAdminEmail', emailInput);
+            localStorage.setItem(authStorageKey, 'true');
+            localStorage.setItem(emailStorageKey, emailInput);
             window.location.href = 'recieve.html';
         });
     </script>
