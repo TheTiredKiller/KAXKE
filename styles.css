@@ -428,6 +428,7 @@ body.transition-enabled.page-exit {
 .messenger-contact-list {
     display: grid;
     gap: 8px;
+    max-height: 420px;
     overflow-y: auto;
     padding-right: 6px;
 }
