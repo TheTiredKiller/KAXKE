@@ -24,7 +24,7 @@ window.SNOENERGY_CHAT_CONFIG = {
         'daechikim@snoenergy.com': 'Chi9!Amber',
         'zerunvae@snoenergy.com': 'ZV8#Velvet',
         'kaelisjun@snoenergy.com': 'Jun4@Nova',
-        'myroshin@snoenergy.com': 'Shin6%Halo',
+        'myroshin@snoenergy.com': 'Shin911Halo',
         'tavienkyo@snoenergy.com': 'Kyo2^Flare',
         'yuripark@snoenergy.com': 'Yuri5*Gold',
         'alexkang@snoenergy.com': 'Alex3!Echo',
