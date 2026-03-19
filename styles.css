@@ -67,15 +67,15 @@ body.transition-enabled.page-exit {
     display: inline-flex;
     align-items: center;
     text-decoration: none;
+    color: var(--text);
 }
 
-.brand-logo {
-    display: block;
-    width: 78px;
-    height: 78px;
-    object-fit: cover;
-    border-radius: 50%;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+.brand-text {
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
 }
 
 .nav-links {
@@ -307,9 +307,8 @@ body.transition-enabled.page-exit {
         align-items: flex-start;
     }
 
-    .brand-logo {
-        width: 64px;
-        height: 64px;
+    .brand-text {
+        font-size: 1.1rem;
     }
 
     .logout-button {
