@@ -1,15 +1,3 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import {
-    get,
-    getDatabase,
-    onValue,
-    orderByChild,
-    push,
-    query,
-    ref,
-    set
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
-
 const firebaseConfig = {
     apiKey: "AIzaSyC8Dq9Z16z2cB3Z8ptghEXJmMimWEsEC14",
     authDomain: "senkick-5b737.firebaseapp.com",
@@ -20,16 +8,8 @@ const firebaseConfig = {
     appId: "1:53226913836:web:7a37a9f4b1df37503cd189"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 
-export {
-    db,
-    get,
-    onValue,
-    orderByChild,
-    push,
-    query,
-    ref,
-    set
-};
+window.SNOENERGY_DB = firebase.database();

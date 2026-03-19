@@ -1,0 +1,12 @@
+{
+  "rules": {
+    "announcements": {
+      ".read": true,
+      ".write": true
+    },
+    "suggestions": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}

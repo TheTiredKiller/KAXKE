@@ -6,6 +6,9 @@
     <title>S: No Energy | Home</title>
     <link rel="stylesheet" href="styles.css">
     <script src="Site-Transition.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
 </head>
 <body>
     <header class="site-header">
@@ -43,10 +46,9 @@
         <div class="container">S: No Energy official webpage.</div>
     </footer>
 
-    <script type="module">
-        import { db, onValue, orderByChild, query, ref } from './firebase-config.js';
-
+    <script>
         const announcementList = document.getElementById('announcementList');
+        const db = window.SNOENERGY_DB;
 
         const adminAliases = {
             'daysxlove@gmail.com': 'SYN4RGY',
@@ -92,9 +94,9 @@
             announcementList.innerHTML = '<p class="announcement-item muted">Loading announcements...</p>';
 
             try {
-                const announcementsQuery = query(ref(db, 'announcements'), orderByChild('createdAt'));
+                const announcementsRef = db.ref('announcements').orderByChild('createdAt');
 
-                onValue(announcementsQuery, function (snapshot) {
+                announcementsRef.on('value', function (snapshot) {
                     const rawAnnouncements = snapshot.val() || {};
                     const savedAnnouncements = Object.values(rawAnnouncements).sort(function (a, b) {
                         return (b.createdAt || 0) - (a.createdAt || 0);
@@ -114,10 +116,12 @@
                             return '<p class="announcement-item"><strong>' + escapeHtml(displayName) + ':</strong> <span class="announcement-body">' + safeMessage + '</span></p>';
                         })
                         .join('');
-                }, function () {
+                }, function (error) {
+                    console.error('Announcements load failed:', error);
                     announcementList.innerHTML = '<p class="announcement-item muted">Live announcements are unavailable right now.</p>';
                 });
             } catch (error) {
+                console.error('Announcements setup failed:', error);
                 announcementList.innerHTML = '<p class="announcement-item muted">Live announcements are unavailable right now.</p>';
             }
         }

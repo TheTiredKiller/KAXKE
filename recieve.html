@@ -6,6 +6,9 @@
     <title>S: No Energy | Admin Access</title>
     <link rel="stylesheet" href="styles.css">
     <script src="Site-Transition.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
 </head>
 <body>
     <header class="site-header">
@@ -66,18 +69,9 @@
         <div class="container">S: No Energy official webpage.</div>
     </footer>
 
-    <script type="module">
-        import {
-            db,
-            onValue,
-            orderByChild,
-            push,
-            query,
-            ref,
-            set
-        } from './firebase-config.js';
-
+    <script>
         const announcementForm = document.getElementById('announcementForm');
+        const db = window.SNOENERGY_DB;
         const messageInput = document.getElementById('announcement');
         const editor = document.getElementById('announcementEditor');
         const loggedInAs = document.getElementById('loggedInAs');
@@ -152,9 +146,9 @@
             suggestionInbox.innerHTML = '<p class="muted">Loading suggestions...</p>';
 
             try {
-                const suggestionsQuery = query(ref(db, 'suggestions'), orderByChild('createdAt'));
+                const suggestionsRef = db.ref('suggestions').orderByChild('createdAt');
 
-                onValue(suggestionsQuery, function (snapshot) {
+                suggestionsRef.on('value', function (snapshot) {
                     const rawSuggestions = snapshot.val() || {};
                     const savedSuggestions = Object.values(rawSuggestions).sort(function (a, b) {
                         return (b.createdAt || 0) - (a.createdAt || 0);
@@ -185,10 +179,12 @@
                             suggestionModal.setAttribute('aria-hidden', 'false');
                         });
                     });
-                }, function () {
+                }, function (error) {
+                    console.error('Suggestions load failed:', error);
                     suggestionInbox.innerHTML = '<p class="muted">Live suggestions are unavailable right now.</p>';
                 });
             } catch (error) {
+                console.error('Suggestions setup failed:', error);
                 suggestionInbox.innerHTML = '<p class="muted">Live suggestions are unavailable right now.</p>';
             }
         }
@@ -224,8 +220,8 @@
             messageInput.value = message;
 
             try {
-                const newAnnouncementRef = push(ref(db, 'announcements'));
-                await set(newAnnouncementRef, {
+                const newAnnouncementRef = db.ref('announcements').push();
+                await newAnnouncementRef.set({
                     email: sessionAdminEmail,
                     author: adminAliases[sessionAdminEmail],
                     message: message,
@@ -234,6 +230,7 @@
 
                 window.location.href = 'index.html';
             } catch (error) {
+                console.error('Announcement save failed:', error);
                 alert('Announcement could not be posted right now.');
             }
         });
