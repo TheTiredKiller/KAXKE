@@ -55,7 +55,7 @@
 
     <div id="suggestionModal" class="modal" aria-hidden="true">
         <div class="modal-content">
-            <button id="closeModal" class="modal-close" type="button">×</button>
+            <button id="closeModal" class="modal-close" type="button">&times;</button>
             <h3 id="modalTitle">Suggestion</h3>
             <p id="modalBody" class="muted"></p>
             <p id="modalTime" class="muted"></p>
@@ -66,7 +66,17 @@
         <div class="container">S: No Energy official webpage.</div>
     </footer>
 
-    <script>
+    <script type="module">
+        import {
+            db,
+            onValue,
+            orderByChild,
+            push,
+            query,
+            ref,
+            set
+        } from './firebase-config.js';
+
         const announcementForm = document.getElementById('announcementForm');
         const messageInput = document.getElementById('announcement');
         const editor = document.getElementById('announcementEditor');
@@ -139,34 +149,48 @@
         });
 
         function renderSuggestions() {
-            const savedSuggestions = JSON.parse(localStorage.getItem('daysxloveSuggestions') || '[]');
+            suggestionInbox.innerHTML = '<p class="muted">Loading suggestions...</p>';
 
-            if (savedSuggestions.length === 0) {
-                suggestionInbox.innerHTML = '<p class="muted">No suggestions yet.</p>';
-                return;
-            }
+            try {
+                const suggestionsQuery = query(ref(db, 'suggestions'), orderByChild('createdAt'));
 
-            suggestionInbox.innerHTML = savedSuggestions
-                .slice()
-                .reverse()
-                .map(function (item, index) {
-                    const safeName = item.name || 'Anonymous';
-                    const preview = (item.message || '').slice(0, 70);
-                    const originalIndex = savedSuggestions.length - 1 - index;
-                    return '<button class="suggestion-entry" type="button" data-index="' + originalIndex + '"><strong>' + safeName + ':</strong> ' + preview + (item.message.length > 70 ? '…' : '') + '</button>';
-                })
-                .join('');
+                onValue(suggestionsQuery, function (snapshot) {
+                    const rawSuggestions = snapshot.val() || {};
+                    const savedSuggestions = Object.values(rawSuggestions).sort(function (a, b) {
+                        return (b.createdAt || 0) - (a.createdAt || 0);
+                    });
 
-            suggestionInbox.querySelectorAll('.suggestion-entry').forEach(function (button) {
-                button.addEventListener('click', function () {
-                    const item = savedSuggestions[Number(button.dataset.index)];
-                    modalTitle.textContent = 'Suggestion from ' + (item.name || 'Anonymous');
-                    modalBody.textContent = item.message || '';
-                    modalTime.textContent = item.createdAt ? 'Sent: ' + new Date(item.createdAt).toLocaleString() : '';
-                    suggestionModal.classList.add('show');
-                    suggestionModal.setAttribute('aria-hidden', 'false');
+                    if (savedSuggestions.length === 0) {
+                        suggestionInbox.innerHTML = '<p class="muted">No suggestions yet.</p>';
+                        return;
+                    }
+
+                    suggestionInbox.innerHTML = savedSuggestions
+                        .map(function (item, index) {
+                            const safeName = item.name || 'Anonymous';
+                            const preview = (item.message || '').slice(0, 70);
+                            return '<button class="suggestion-entry" type="button" data-index="' + index + '"><strong>' + safeName + ':</strong> ' + preview + (item.message.length > 70 ? '...' : '') + '</button>';
+                        })
+                        .join('');
+
+                    suggestionInbox.querySelectorAll('.suggestion-entry').forEach(function (button) {
+                        button.addEventListener('click', function () {
+                            const item = savedSuggestions[Number(button.dataset.index)];
+                            modalTitle.textContent = 'Suggestion from ' + (item.name || 'Anonymous');
+                            modalBody.textContent = item.message || '';
+                            modalTime.textContent = item.createdAt
+                                ? 'Sent: ' + new Date(item.createdAt).toLocaleString()
+                                : '';
+                            suggestionModal.classList.add('show');
+                            suggestionModal.setAttribute('aria-hidden', 'false');
+                        });
+                    });
+                }, function () {
+                    suggestionInbox.innerHTML = '<p class="muted">Live suggestions are unavailable right now.</p>';
                 });
-            });
+            } catch (error) {
+                suggestionInbox.innerHTML = '<p class="muted">Live suggestions are unavailable right now.</p>';
+            }
         }
 
         closeModal.addEventListener('click', function () {
@@ -187,7 +211,7 @@
             window.location.href = 'Admin-login.html';
         });
 
-        announcementForm.addEventListener('submit', function (event) {
+        announcementForm.addEventListener('submit', async function (event) {
             event.preventDefault();
 
             const message = sanitizeAnnouncementHtml(editor.innerHTML);
@@ -199,15 +223,19 @@
 
             messageInput.value = message;
 
-            const savedAnnouncements = JSON.parse(localStorage.getItem('kaxkeAnnouncements') || '[]');
-            savedAnnouncements.push({
-                email: sessionAdminEmail,
-                author: adminAliases[sessionAdminEmail],
-                message: message
-            });
-            localStorage.setItem('kaxkeAnnouncements', JSON.stringify(savedAnnouncements));
+            try {
+                const newAnnouncementRef = push(ref(db, 'announcements'));
+                await set(newAnnouncementRef, {
+                    email: sessionAdminEmail,
+                    author: adminAliases[sessionAdminEmail],
+                    message: message,
+                    createdAt: Date.now()
+                });
 
-            window.location.href = 'index.html';
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert('Announcement could not be posted right now.');
+            }
         });
 
         renderSuggestions();

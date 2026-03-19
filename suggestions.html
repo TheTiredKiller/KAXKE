@@ -55,10 +55,12 @@
         <div class="container">S: No Energy official webpage.</div>
     </footer>
 
-    <script>
+    <script type="module">
+        import { db, push, ref, set } from './firebase-config.js';
+
         const suggestionForm = document.getElementById('suggestionForm');
 
-        suggestionForm.addEventListener('submit', function (event) {
+        suggestionForm.addEventListener('submit', async function (event) {
             event.preventDefault();
 
             const nameInput = document.getElementById('name');
@@ -70,16 +72,19 @@
                 return;
             }
 
-            const savedSuggestions = JSON.parse(localStorage.getItem('daysxloveSuggestions') || '[]');
-            savedSuggestions.push({
-                name: name,
-                message: message,
-                createdAt: new Date().toISOString()
-            });
-            localStorage.setItem('daysxloveSuggestions', JSON.stringify(savedSuggestions));
+            try {
+                const newSuggestionRef = push(ref(db, 'suggestions'));
+                await set(newSuggestionRef, {
+                    name: name,
+                    message: message,
+                    createdAt: Date.now()
+                });
 
-            alert('Suggestion sent to the admin inbox.');
-            suggestionForm.reset();
+                alert('Suggestion sent to the admin inbox.');
+                suggestionForm.reset();
+            } catch (error) {
+                alert('Suggestion could not be sent right now.');
+            }
         });
     </script>
 </body>

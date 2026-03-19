@@ -43,9 +43,10 @@
         <div class="container">S: No Energy official webpage.</div>
     </footer>
 
-    <script>
+    <script type="module">
+        import { db, onValue, orderByChild, query, ref } from './firebase-config.js';
+
         const announcementList = document.getElementById('announcementList');
-        const savedAnnouncements = JSON.parse(localStorage.getItem('kaxkeAnnouncements') || '[]');
 
         const adminAliases = {
             'daysxlove@gmail.com': 'SYN4RGY',
@@ -87,21 +88,41 @@
             return container.innerHTML;
         }
 
-        if (savedAnnouncements.length === 0) {
-            announcementList.innerHTML = '<p class="announcement-item"><strong>Admin:</strong> Welcome to the SYN4RGY page.</p>';
-        } else {
-            announcementList.innerHTML = savedAnnouncements
-                .slice()
-                .reverse()
-                .map(function (item) {
-                    const displayName = item.author || adminAliases[item.email] || 'Admin';
-                    const safeMessage = item.message && item.message.indexOf('<') !== -1
-                        ? sanitizeAnnouncementHtml(item.message)
-                        : escapeHtml(item.message || '').replace(/\n/g, '<br>');
-                    return '<p class="announcement-item"><strong>' + escapeHtml(displayName) + ':</strong> <span class="announcement-body">' + safeMessage + '</span></p>';
-                })
-                .join('');
+        function loadAnnouncements() {
+            announcementList.innerHTML = '<p class="announcement-item muted">Loading announcements...</p>';
+
+            try {
+                const announcementsQuery = query(ref(db, 'announcements'), orderByChild('createdAt'));
+
+                onValue(announcementsQuery, function (snapshot) {
+                    const rawAnnouncements = snapshot.val() || {};
+                    const savedAnnouncements = Object.values(rawAnnouncements).sort(function (a, b) {
+                        return (b.createdAt || 0) - (a.createdAt || 0);
+                    });
+
+                    if (savedAnnouncements.length === 0) {
+                        announcementList.innerHTML = '<p class="announcement-item"><strong>Admin:</strong> Welcome to the SYN4RGY page.</p>';
+                        return;
+                    }
+
+                    announcementList.innerHTML = savedAnnouncements
+                        .map(function (item) {
+                            const displayName = item.author || adminAliases[item.email] || 'Admin';
+                            const safeMessage = item.message && item.message.indexOf('<') !== -1
+                                ? sanitizeAnnouncementHtml(item.message)
+                                : escapeHtml(item.message || '').replace(/\n/g, '<br>');
+                            return '<p class="announcement-item"><strong>' + escapeHtml(displayName) + ':</strong> <span class="announcement-body">' + safeMessage + '</span></p>';
+                        })
+                        .join('');
+                }, function () {
+                    announcementList.innerHTML = '<p class="announcement-item muted">Live announcements are unavailable right now.</p>';
+                });
+            } catch (error) {
+                announcementList.innerHTML = '<p class="announcement-item muted">Live announcements are unavailable right now.</p>';
+            }
         }
+
+        loadAnnouncements();
     </script>
 </body>
 </html>
