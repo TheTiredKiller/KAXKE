@@ -30,7 +30,7 @@ window.SNOENERGY_CHAT_CONFIG = {
         'alexkang@snoenergy.com': 'Alex3!Echo',
         'jakelee@snoenergy.com': 'Jake8&Comet',
         'kyunjongchoi@snoenergy.com': 'KJ7?Orbit',
-        'xxkeplitxx@snoenergy.com': 'Keplit1#Rush',
+        'xxkeplitxx@snoenergy.com': 'paopao0228',
         'jphantom@snoenergy.com': 'JP6@Shadow',
         'xlzjhules@snoenergy.com': 'Jhules4!Spark',
         'xle-rinluvx@snoenergy.com': 'RinLuvX9$Star'

@@ -81,6 +81,7 @@
     </footer>
 
     <script src="Chats-Access.JS"></script>
+    <script src="Chat-Rooms.JS"></script>
     <script>
         const chatLoginView = document.getElementById('chatLoginView');
         const chatContentView = document.getElementById('chatContentView');
@@ -93,41 +94,7 @@
         const chatEmailKey = chatConfig.storageKeys ? chatConfig.storageKeys.email : 'syn4rgyChatEmail';
         const chatUsers = chatConfig.users || {};
         const chatPasswords = chatConfig.passwords || {};
-        const groupChats = [
-            {
-                name: 'SYN4RGY',
-                audience: 'SYN4RGY members and Kim Arie',
-                members: [
-                    'xxkeplitxx@snoenergy.com',
-                    'jphantom@snoenergy.com',
-                    'xlzjhules@snoenergy.com',
-                    'xle-rinluvx@snoenergy.com',
-                    'kimarie@snoenergy.com'
-                ]
-            },
-            {
-                name: 'S: No Energy',
-                audience: 'All groups in S: No Energy',
-                members: Object.keys(chatUsers)
-            },
-            {
-                name: 'Dyumdai',
-                audience: 'Dyumdai members and xXKeplitXx',
-                members: [
-                    'kimarie@snoenergy.com',
-                    'daechikim@snoenergy.com',
-                    'zerunvae@snoenergy.com',
-                    'kaelisjun@snoenergy.com',
-                    'myroshin@snoenergy.com',
-                    'tavienkyo@snoenergy.com',
-                    'yuripark@snoenergy.com',
-                    'alexkang@snoenergy.com',
-                    'jakelee@snoenergy.com',
-                    'kyunjongchoi@snoenergy.com',
-                    'xxkeplitxx@snoenergy.com'
-                ]
-            }
-        ];
+        const groupChats = window.SNOENERGY_CHAT_ROOMS || [];
 
         function renderGroupChats(email) {
             const displayName = chatUsers[email] || email;
@@ -139,8 +106,10 @@
                     '<h3>' + group.name + '</h3>' +
                     '<p class="muted">For: ' + group.audience + '</p>' +
                     '<p class="chat-status ' + (hasAccess ? 'chat-allowed' : 'chat-denied') + '">' +
-                    (hasAccess ? 'Access granted' : 'No access for this account') +
-                    '</p>' +
+                    (hasAccess ? 'Access granted' : 'No access for this account') + '</p>' +
+                    (hasAccess
+                        ? '<a class="button-link chat-open-link" href="' + group.page + '">Open Room</a>'
+                        : '') +
                     '</article>';
             }).join('');
         }

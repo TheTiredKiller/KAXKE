@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S: No Energy | Dyumdai Chat</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+<body data-chat-room="dyumdai">
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="index.html" aria-label="S: No Energy home">
+                <span class="brand-text">S: No Energy</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="members.html">Members</a>
+                <a href="Chats.html">Chats</a>
+                <a href="suggestions.html">Suggestions</a>
+                <a href="Admin-login.html">Admin Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Dyumdai Chat</h2>
+            <p>Private room for Dyumdai members and xXKeplitXx.</p>
+            <p id="roomIdentity" class="muted"></p>
+        </section>
+
+        <section class="grid chat-room-layout">
+            <article class="card">
+                <h3>Messages</h3>
+                <div id="chatMessages" class="chat-messages">
+                    <p class="muted">Loading messages...</p>
+                </div>
+            </article>
+
+            <form id="chatMessageForm" class="card form-card">
+                <h3>Send Message</h3>
+                <label for="chatMessage">Message</label>
+                <textarea id="chatMessage" name="chatMessage" placeholder="Type your message..." required></textarea>
+                <input type="submit" value="Send">
+                <div class="card-actions">
+                    <a class="button-link" href="Chats.html">Back to Chats</a>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <button id="chatRoomLogoutButton" class="logout-button" type="button">Log Out</button>
+
+    <footer class="footer">
+        <div class="container">S: No Energy official webpage.</div>
+    </footer>
+
+    <script src="Chats-Access.JS"></script>
+    <script src="Chat-Rooms.JS"></script>
+    <script src="chat-room.js"></script>
+</body>
+</html>
