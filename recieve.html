@@ -18,7 +18,7 @@
                 <a href="members.html">Members</a>
                 <a href="Chats.html">Chats</a>
                 <a href="suggestions.html">Suggestions</a>
-                <a href="admin-login.html">Admin Login</a>
+                <a href="Admin-login.html">Admin Login</a>
             </nav>
         </div>
     </header>
@@ -90,7 +90,7 @@
         const sessionAdminEmail = (localStorage.getItem(emailStorageKey) || '').toLowerCase();
 
         if (!isAuthenticated || !Object.prototype.hasOwnProperty.call(adminAliases, sessionAdminEmail)) {
-            window.location.href = 'admin-login.html';
+            window.location.href = 'Admin-login.html';
         } else {
             loggedInAs.textContent = 'Logged in as: ' + adminAliases[sessionAdminEmail];
         }
@@ -184,7 +184,7 @@
         logoutButton.addEventListener('click', function () {
             localStorage.removeItem(authStorageKey);
             localStorage.removeItem(emailStorageKey);
-            window.location.href = 'admin-login.html';
+            window.location.href = 'Admin-login.html';
         });
 
         announcementForm.addEventListener('submit', function (event) {
