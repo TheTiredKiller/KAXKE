@@ -49,6 +49,7 @@
     <script>
         const announcementList = document.getElementById('announcementList');
         const db = window.SNOENERGY_DB;
+        const reactionUserKey = 'snoenergyReactionUserId';
 
         const adminAliases = {
             'daysxlove@gmail.com': 'SYN4RGY',
@@ -90,6 +91,103 @@
             return container.innerHTML;
         }
 
+        function escapeAttribute(text) {
+            return escapeHtml(text).replace(/"/g, '&quot;');
+        }
+
+        function normalizeEmojiInput(value) {
+            return String(value || '').trim().slice(0, 8);
+        }
+
+        function getReactionUserId() {
+            let savedId = localStorage.getItem(reactionUserKey);
+
+            if (!savedId) {
+                savedId = 'reactor-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+                localStorage.setItem(reactionUserKey, savedId);
+            }
+
+            return savedId;
+        }
+
+        function buildReactionSummary(reactions) {
+            const counts = {};
+
+            (reactions || []).forEach(function (reaction) {
+                const emoji = normalizeEmojiInput(reaction.emoji);
+                if (!emoji) {
+                    return;
+                }
+
+                counts[emoji] = (counts[emoji] || 0) + 1;
+            });
+
+            return Object.keys(counts).map(function (emoji) {
+                return {
+                    emoji: emoji,
+                    count: counts[emoji]
+                };
+            }).sort(function (a, b) {
+                return b.count - a.count;
+            });
+        }
+
+        function findUserReactions(reactions, userId) {
+            return (reactions || []).filter(function (reaction) {
+                return reaction && reaction.userId === userId;
+            });
+        }
+
+        async function sendReaction(announcementId, emoji) {
+            const cleanEmoji = normalizeEmojiInput(emoji);
+            if (!cleanEmoji) {
+                return;
+            }
+
+            try {
+                const userId = getReactionUserId();
+                const reactionsRef = db.ref('announcements/' + announcementId + '/reactions');
+                const snapshot = await reactionsRef.once('value');
+                const rawReactions = snapshot.val() || {};
+                const existingReactions = Object.keys(rawReactions).map(function (key) {
+                    const reaction = rawReactions[key] || {};
+                    reaction.id = key;
+                    return reaction;
+                });
+                const userReactions = findUserReactions(existingReactions, userId);
+                const matchingReaction = userReactions.find(function (reaction) {
+                    return reaction.emoji === cleanEmoji;
+                });
+
+                if (matchingReaction) {
+                    await db.ref('announcements/' + announcementId + '/reactions/' + matchingReaction.id).remove();
+                    return;
+                }
+
+                if (userReactions.length >= 3) {
+                    alert('You can only have up to 3 reactions on one announcement.');
+                    return;
+                }
+
+                const userReactionRef = db.ref('announcements/' + announcementId + '/reactions').push();
+                await userReactionRef.set({
+                    emoji: cleanEmoji,
+                    userId: userId,
+                    createdAt: Date.now()
+                });
+            } catch (error) {
+                console.error('Reaction save failed:', error);
+                alert('Reaction could not be sent right now.');
+            }
+        }
+
+        announcementList.addEventListener('click', function (event) {
+            const presetButton = event.target.closest('.reaction-chip');
+            if (presetButton) {
+                sendReaction(presetButton.dataset.announcementId, presetButton.dataset.emoji);
+            }
+        });
+
         function loadAnnouncements() {
             announcementList.innerHTML = '<p class="announcement-item muted">Loading announcements...</p>';
 
@@ -98,9 +196,14 @@
 
                 announcementsRef.on('value', function (snapshot) {
                     const rawAnnouncements = snapshot.val() || {};
-                    const savedAnnouncements = Object.values(rawAnnouncements).sort(function (a, b) {
+                    const savedAnnouncements = Object.keys(rawAnnouncements).map(function (key) {
+                        const value = rawAnnouncements[key] || {};
+                        value.id = key;
+                        return value;
+                    }).sort(function (a, b) {
                         return (b.createdAt || 0) - (a.createdAt || 0);
                     });
+                    const reactionUserId = getReactionUserId();
 
                     if (savedAnnouncements.length === 0) {
                         announcementList.innerHTML = '<p class="announcement-item"><strong>Admin:</strong> Welcome to the SYN4RGY page.</p>';
@@ -113,7 +216,27 @@
                             const safeMessage = item.message && item.message.indexOf('<') !== -1
                                 ? sanitizeAnnouncementHtml(item.message)
                                 : escapeHtml(item.message || '').replace(/\n/g, '<br>');
-                            return '<p class="announcement-item"><strong>' + escapeHtml(displayName) + ':</strong> <span class="announcement-body">' + safeMessage + '</span></p>';
+                            const reactions = item.reactions ? Object.values(item.reactions) : [];
+                            const reactionSummary = buildReactionSummary(reactions);
+                            const existingReactions = findUserReactions(reactions, reactionUserId);
+                            const reactionButtons = ['❤️', '🔥', '😂', '👏', '😮', 'AD', 'IBTHB'].map(function (emoji) {
+                                const isActive = existingReactions.some(function (reaction) {
+                                    return reaction.emoji === emoji;
+                                });
+                                return '<button class="reaction-chip' + (isActive ? ' reaction-chip-active' : '') + '" type="button" data-announcement-id="' + escapeAttribute(item.id) + '" data-emoji="' + escapeAttribute(emoji) + '">' + emoji + '</button>';
+                            }).join('');
+                            const reactionCounts = reactionSummary.length
+                                ? reactionSummary.map(function (entry) {
+                                    return '<span class="reaction-count">' + escapeHtml(entry.emoji) + ' ' + entry.count + '</span>';
+                                }).join('')
+                                : '<span class="muted">No reactions yet.</span>';
+
+                            return '<div class="announcement-item">' +
+                                '<p class="announcement-copy"><strong>' + escapeHtml(displayName) + ':</strong> <span class="announcement-body">' + safeMessage + '</span></p>' +
+                                '<div class="reaction-row">' + reactionCounts + '</div>' +
+                                '<div class="reaction-row">' + reactionButtons + '</div>' +
+                                '<p class="muted reaction-note">You can react with up to 3 emojis. Click one again to remove it.</p>' +
+                                '</div>';
                         })
                         .join('');
                 }, function (error) {

@@ -20,7 +20,7 @@ window.SNOENERGY_CHAT_CONFIG = {
         'xle-rinluvx@snoenergy.com': 'XLE-RinLuvX'
     },
     passwords: {
-        'kimarie@snoenergy.com': 'Arie7$Moon',
+        'kimarie@snoenergy.com': 'CuteGirlYaya319',
         'daechikim@snoenergy.com': 'Chi9!Amber',
         'zerunvae@snoenergy.com': 'ZV8#Velvet',
         'kaelisjun@snoenergy.com': 'Jun4@Nova',

@@ -156,6 +156,47 @@ body.transition-enabled.page-exit {
     line-height: 1.6;
 }
 
+.announcement-copy {
+    margin: 0;
+}
+
+.reaction-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.reaction-chip,
+.reaction-send,
+.reaction-count {
+    border-radius: 999px;
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    color: var(--text);
+    font-size: 0.95rem;
+}
+
+.reaction-chip,
+.reaction-send {
+    cursor: pointer;
+}
+
+.reaction-chip:hover,
+.reaction-send:hover {
+    border-color: var(--primary);
+}
+
+.reaction-chip-active {
+    border-color: var(--primary);
+    background: linear-gradient(180deg, #5c3507, #2d1703);
+}
+
+.reaction-note {
+    margin: 10px 0 0;
+}
+
 .tag {
     display: inline-block;
     color: #2b1801;
