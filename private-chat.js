@@ -4,6 +4,7 @@
     const authStorageKey = chatConfig.storageKeys ? chatConfig.storageKeys.auth : 'syn4rgyChatAuthenticated';
     const emailStorageKey = chatConfig.storageKeys ? chatConfig.storageKeys.email : 'syn4rgyChatEmail';
     const chatUsers = chatConfig.users || {};
+    const chatState = window.SNOENERGY_CHAT_STATE || {};
     const savedChatEmail = (localStorage.getItem(emailStorageKey) || '').toLowerCase();
     const isAuthenticated = localStorage.getItem(authStorageKey) === 'true';
     const params = new URLSearchParams(window.location.search);
@@ -32,6 +33,7 @@
     const privateRoomId = 'private-' + participants.map(function (email) {
         return email.replace(/[^a-z0-9]/gi, '-');
     }).join('--');
+    const seenKey = chatState.getPrivateSeenKey ? chatState.getPrivateSeenKey(savedChatEmail, privateRoomId) : '';
 
     privateChatTitle.textContent = 'Private Chat';
     privateChatSubtitle.textContent = chatUsers[targetEmail] || targetEmail;
@@ -95,6 +97,10 @@
         }).join('');
 
         privateChatMessages.scrollTop = privateChatMessages.scrollHeight;
+
+        if (messages.length > 0 && seenKey) {
+            chatState.setSeenTimestamp(seenKey, messages[messages.length - 1].createdAt || 0);
+        }
     }
 
     db.ref('privateChats/' + privateRoomId + '/messages').orderByChild('createdAt').on('value', renderMessages, function () {

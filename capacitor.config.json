@@ -1,0 +1,9 @@
+{
+  "appId": "com.snoenergy.app",
+  "appName": "S: No Energy",
+  "webDir": "app",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}

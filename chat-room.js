@@ -9,6 +9,7 @@
     const currentRoom = rooms.find(function (room) {
         return room.id === roomId;
     });
+    const chatState = window.SNOENERGY_CHAT_STATE || {};
     const savedChatEmail = (localStorage.getItem(emailStorageKey) || '').toLowerCase();
     const isAuthenticated = localStorage.getItem(authStorageKey) === 'true';
     const roomIdentity = document.getElementById('roomIdentity');
@@ -16,6 +17,7 @@
     const chatMessageForm = document.getElementById('chatMessageForm');
     const chatMessageInput = document.getElementById('chatMessage');
     const chatRoomLogoutButton = document.getElementById('chatRoomLogoutButton');
+    const seenKey = chatState.getGroupSeenKey ? chatState.getGroupSeenKey(savedChatEmail, roomId) : '';
 
     if (!currentRoom) {
         window.location.href = 'Chats.html';
@@ -63,6 +65,10 @@
         }).join('');
 
         chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        if (messages.length > 0 && seenKey) {
+            chatState.setSeenTimestamp(seenKey, messages[messages.length - 1].createdAt || 0);
+        }
     }
 
     db.ref('chatRooms/' + currentRoom.id + '/messages').orderByChild('createdAt').on('value', renderMessages, function () {

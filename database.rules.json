@@ -7,6 +7,20 @@
     "suggestions": {
       ".read": true,
       ".write": true
-    }
+    },
+    "chatRooms": {
+      ".read": true,
+      ".write": true
+    },
+    "privateChats": {
+      ".read": true,
+      ".write": true
+    },
+    "appUpdates": {
+      ".read": true,
+      ".write": true
+    },
+    ".read": false,
+    ".write": false
   }
 }

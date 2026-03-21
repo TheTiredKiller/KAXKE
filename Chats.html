@@ -6,6 +6,10 @@
     <title>S: No Energy | Chats</title>
     <link rel="stylesheet" href="styles.css">
     <script src="device-mode.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="app-update.js" defer></script>
 </head>
 <body>
     <header class="site-header">
@@ -77,15 +81,22 @@
                     <h3>Search Members</h3>
                     <label for="memberSearch" class="muted">Find an S: No Energy member to start a private chat.</label>
                     <input type="text" id="memberSearch" class="chat-search" placeholder="Search member name...">
-                    <div id="memberSearchResults" class="private-chat-results"></div>
+                    <div id="memberSearchResults" class="private-chat-results chat-scroll-area"></div>
                 </article>
             </section>
 
-            <section id="groupChatGrid" class="grid"></section>
+            <section id="groupChatGrid" class="grid chat-scroll-area"></section>
         </section>
     </main>
 
     <button id="chatLogoutButton" class="logout-button hidden-view" type="button">Log Out</button>
+
+    <nav class="mobile-bottom-nav" aria-label="Chat mobile navigation">
+        <a href="index.html">Home</a>
+        <a href="members.html">Members</a>
+        <a href="Chats.html">Chats</a>
+        <a href="suggestions.html">Suggestions</a>
+    </nav>
 
     <footer class="footer">
         <div class="container">S: No Energy official webpage.</div>
@@ -93,6 +104,7 @@
 
     <script src="Chats-Access.JS"></script>
     <script src="Chat-Rooms.JS"></script>
+    <script src="Chat-State.js"></script>
     <script>
         const chatLoginView = document.getElementById('chatLoginView');
         const chatContentView = document.getElementById('chatContentView');
@@ -108,7 +120,59 @@
         const chatUsers = chatConfig.users || {};
         const chatPasswords = chatConfig.passwords || {};
         const groupChats = window.SNOENERGY_CHAT_ROOMS || [];
+        const chatState = window.SNOENERGY_CHAT_STATE || {};
+        const db = window.SNOENERGY_DB;
+        const groupUnreadCounts = {};
+        const privateUnreadCounts = {};
+        let unreadBoundEmail = '';
         let activeChatEmail = '';
+
+        function getUnreadBadge(count) {
+            return count > 0 ? '<span class="chat-unread-badge">' + count + '</span>' : '';
+        }
+
+        function bindUnreadListeners(email) {
+            if (!db || unreadBoundEmail === email) {
+                return;
+            }
+
+            unreadBoundEmail = email;
+
+            groupChats.forEach(function (group) {
+                if (group.members.indexOf(email) === -1) {
+                    return;
+                }
+
+                db.ref('chatRooms/' + group.id + '/messages').on('value', function (snapshot) {
+                    const rawMessages = snapshot.val() || {};
+                    const messages = Object.values(rawMessages);
+                    const seenKey = chatState.getGroupSeenKey(email, group.id);
+                    const seenAt = chatState.getSeenTimestamp(seenKey);
+                    groupUnreadCounts[group.id] = messages.filter(function (item) {
+                        return item && item.email !== email && (item.createdAt || 0) > seenAt;
+                    }).length;
+                    renderGroupChats(email);
+                });
+            });
+
+            Object.keys(chatUsers).forEach(function (memberEmail) {
+                if (memberEmail === email) {
+                    return;
+                }
+
+                const roomId = chatState.getPrivateRoomId(email, memberEmail);
+                db.ref('privateChats/' + roomId + '/messages').on('value', function (snapshot) {
+                    const rawMessages = snapshot.val() || {};
+                    const messages = Object.values(rawMessages);
+                    const seenKey = chatState.getPrivateSeenKey(email, roomId);
+                    const seenAt = chatState.getSeenTimestamp(seenKey);
+                    privateUnreadCounts[memberEmail] = messages.filter(function (item) {
+                        return item && item.email !== email && (item.createdAt || 0) > seenAt;
+                    }).length;
+                    renderPrivateChatResults(email, memberSearch.value);
+                });
+            });
+        }
 
         function renderPrivateChatResults(email, searchTerm) {
             const normalizedSearch = (searchTerm || '').trim().toLowerCase();
@@ -128,9 +192,10 @@
 
             memberSearchResults.innerHTML = filteredMembers.map(function (memberEmail) {
                 const memberName = chatUsers[memberEmail] || memberEmail;
+                const unreadCount = privateUnreadCounts[memberEmail] || 0;
                 return '<div class="private-chat-entry">' +
                     '<div>' +
-                    '<p class="private-chat-name">' + memberName + '</p>' +
+                    '<p class="private-chat-name">' + memberName + getUnreadBadge(unreadCount) + '</p>' +
                     '<p class="muted private-chat-email">' + memberEmail + '</p>' +
                     '</div>' +
                     '<a class="button-link" href="private-chat.html?user=' + encodeURIComponent(memberEmail) + '">Private Chat</a>' +
@@ -145,9 +210,10 @@
             renderPrivateChatResults(email, memberSearch.value);
             groupChatGrid.innerHTML = groupChats.map(function (group) {
                 const hasAccess = group.members.indexOf(email) !== -1;
+                const unreadCount = groupUnreadCounts[group.id] || 0;
                 return '<article class="card group-chat-card">' +
                     '<span class="tag">Group Chat</span>' +
-                    '<h3>' + group.name + '</h3>' +
+                    '<h3>' + group.name + getUnreadBadge(unreadCount) + '</h3>' +
                     '<p class="muted">For: ' + group.audience + '</p>' +
                     '<p class="chat-status ' + (hasAccess ? 'chat-allowed' : 'chat-denied') + '">' +
                     (hasAccess ? 'Access granted' : 'No access for this account') + '</p>' +
@@ -177,6 +243,7 @@
         const chatAuthenticated = localStorage.getItem(chatAuthKey) === 'true';
 
         if (chatAuthenticated && Object.prototype.hasOwnProperty.call(chatUsers, savedChatEmail)) {
+            bindUnreadListeners(savedChatEmail);
             openChatView(savedChatEmail);
         }
 
@@ -198,6 +265,7 @@
 
             localStorage.setItem(chatAuthKey, 'true');
             localStorage.setItem(chatEmailKey, emailInput);
+            bindUnreadListeners(emailInput);
             openChatView(emailInput);
         });
 
