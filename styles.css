@@ -25,6 +25,11 @@ body {
     color: var(--text);
 }
 
+html,
+body {
+    overflow-x: hidden;
+}
+
 body.transition-enabled {
     opacity: 0;
     transition: opacity 0.32s ease, transform 0.32s ease;
@@ -82,6 +87,7 @@ body.transition-enabled.page-exit {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    min-width: 0;
 }
 
 .nav-links a,
@@ -176,6 +182,8 @@ body.transition-enabled.page-exit {
     background: var(--bg-soft);
     color: var(--text);
     font-size: 0.95rem;
+    max-width: 100%;
+    word-break: break-word;
 }
 
 .reaction-chip,
@@ -440,6 +448,12 @@ body.transition-enabled.page-exit {
     margin-bottom: 4px;
 }
 
+.mobile-chat-back {
+    display: none;
+    margin-top: 14px;
+    width: fit-content;
+}
+
 .messenger-layout {
     display: grid;
     grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
@@ -530,6 +544,7 @@ body.transition-enabled.page-exit {
 
 .messenger-composer textarea {
     flex: 1;
+    width: 100%;
     min-height: 56px;
     max-height: 140px;
     resize: vertical;
@@ -673,6 +688,10 @@ body.device-mobile .header-inner {
     align-items: flex-start;
 }
 
+body.device-mobile .container {
+    width: min(100%, calc(100% - 24px));
+}
+
 body.device-mobile .brand-text {
     font-size: 1.1rem;
 }
@@ -689,4 +708,69 @@ body.device-mobile .messenger-layout {
 body.device-mobile .messenger-sidebar,
 body.device-mobile .messenger-thread {
     min-height: auto;
+}
+
+body.device-mobile .grid {
+    grid-template-columns: 1fr;
+}
+
+body.device-mobile .card {
+    padding: 14px;
+}
+
+body.device-mobile .nav-links {
+    width: 100%;
+}
+
+body.device-mobile .nav-links a,
+body.device-mobile .button-link {
+    max-width: 100%;
+    word-break: break-word;
+}
+
+body.device-mobile .reaction-row {
+    align-items: stretch;
+}
+
+body.device-mobile .reaction-chip,
+body.device-mobile .reaction-count {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+}
+
+body.device-mobile .private-chat-entry {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+body.device-mobile .private-chat-entry .button-link {
+    text-align: center;
+}
+
+body.device-mobile .chat-message {
+    max-width: 100%;
+}
+
+body.device-mobile .messenger-contact-list,
+body.device-mobile .scroll-list,
+body.device-mobile .chat-messages {
+    max-width: 100%;
+    padding-right: 0;
+}
+
+body.device-mobile .messenger-composer {
+    flex-direction: column;
+}
+
+body.device-mobile .messenger-send {
+    width: 100%;
+}
+
+body.device-mobile .messenger-sidebar {
+    display: none;
+}
+
+body.device-mobile .mobile-chat-back {
+    display: inline-flex;
 }
