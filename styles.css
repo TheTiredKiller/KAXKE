@@ -649,3 +649,44 @@ body.transition-enabled.page-exit {
     height: 32px;
     cursor: pointer;
 }
+
+body.device-pc .header-inner {
+    flex-direction: row;
+    align-items: center;
+}
+
+body.device-pc .brand-text {
+    font-size: 1.35rem;
+}
+
+body.device-pc .logout-button {
+    right: 22px;
+    bottom: 22px;
+}
+
+body.device-pc .messenger-layout {
+    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+}
+
+body.device-mobile .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+body.device-mobile .brand-text {
+    font-size: 1.1rem;
+}
+
+body.device-mobile .logout-button {
+    right: 14px;
+    bottom: 14px;
+}
+
+body.device-mobile .messenger-layout {
+    grid-template-columns: 1fr;
+}
+
+body.device-mobile .messenger-sidebar,
+body.device-mobile .messenger-thread {
+    min-height: auto;
+}
